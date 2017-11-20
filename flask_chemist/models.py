@@ -22,6 +22,8 @@ from flask_chemist.exceptions import InvalidModelDeclaration
 
 
 class Model(object):
+    '''
+    '''
     __metaclass__ = ORM
     __primary_key_name__ = 'id'
     manager = Manager

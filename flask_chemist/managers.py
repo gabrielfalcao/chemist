@@ -15,6 +15,8 @@ def escape_query(query, escape='#'):
 
 
 class Manager(object):
+    """
+    """
 
     def __init__(self, model_klass, engine):
         self.model = model_klass
@@ -45,9 +47,9 @@ class Manager(object):
 
     def get_or_create(self, **data):
         """Tries to get a model from the database that would match the
-        given keyword-args through `Model.find_one_by()`. If not
+        given keyword-args through :py:meth:`Manager.find_one_by`. If not
         found, a new instance is created in the database through
-        `Model.create()`"""
+        :py:meth:`Manager.create`"""
         instance = self.find_one_by(**data)
         if not instance:
             instance = self.create(**data)

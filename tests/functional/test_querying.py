@@ -17,7 +17,7 @@ metadata = MetaData()
 
 
 def reset_db(context):
-    engine = set_engine('mysql://root@chemist/test-db')
+    engine = set_engine('mysql://root@localhost/chemist')
     metadata.drop_all(engine)
     metadata.create_all(engine)
 
@@ -27,23 +27,21 @@ clean_db = scenario(reset_db, reset_db)
 
 class User(Model):
     table = db.Table('md_user', metadata,
-        db.Column('id', db.Integer, primary_key=True),
-        db.Column('github_id', db.Integer, nullable=False, unique=True),
-        db.Column('github_token', db.String(256), nullable=True),
-        db.Column('gravatar_id', db.String(40), nullable=False, unique=True),
-        db.Column('username', db.String(80), nullable=False, unique=True),
-        db.Column('email', db.String(100), nullable=False, unique=True),
-        db.Column('created_at', db.DateTime, default=datetime.now),
-        db.Column('updated_at', db.DateTime, default=datetime.now),
-    )
+                     db.Column('id', db.Integer, primary_key=True),
+                     db.Column('github_id', db.Integer, nullable=False, unique=True),
+                     db.Column('github_token', db.String(256), nullable=True),
+                     db.Column('gravatar_id', db.String(40), nullable=False, unique=True),
+                     db.Column('username', db.String(80), nullable=False, unique=True),
+                     db.Column('email', db.String(100), nullable=False, unique=True),
+                     db.Column('created_at', db.DateTime, default=datetime.now),
+                     db.Column('updated_at', db.DateTime, default=datetime.now))
 
 
 class DummyUserModel(Model):
     table = db.Table('dummy_user_model', metadata,
-        db.Column('id', db.Integer, primary_key=True),
-        db.Column('name', db.String(80)),
-        db.Column('age', db.Integer),
-    )
+                     db.Column('id', db.Integer, primary_key=True),
+                     db.Column('name', db.String(80)),
+                     db.Column('age', db.Integer))
 
 
 def now():
@@ -52,10 +50,9 @@ def now():
 
 class ExquisiteModel(Model):
     table = db.Table('dummy_exquisite', metadata,
-        db.Column('id', db.Integer, primary_key=True),
-        db.Column('score', db.Numeric(), default='10.3'),
-        db.Column('created_at', db.DateTime(), default=now),
-    )
+                     db.Column('id', db.Integer, primary_key=True),
+                     db.Column('score', db.Numeric(), default='10.3'),
+                     db.Column('created_at', db.DateTime(), default=now))
 
 
 @clean_db
