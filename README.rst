@@ -8,6 +8,22 @@ Chemist
 
 A simple, flexible and testable active-record powered by SQLAlchemy.
 
+.. image:: https://readthedocs.org/projects/chemist/badge/?version=latest
+   :target: http://chemist.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+.. |Build Status| image:: https://travis-ci.org/gabrielfalcao/sure.png?branch=master
+   :target: https://travis-ci.org/gabrielfalcao/sure
+   :alt: Build Status
+.. |PyPI package version| image:: https://badge.fury.io/py/sure.svg
+   :target: https://badge.fury.io/py/sure
+   :alt: PyPI versions from fury.io
+.. |PyPI python versions| image:: https://img.shields.io/pypi/pyversions/sure.svg
+   :target: https://pypi.python.org/pypi/sure
+   :alt: PyPI versions from shields.io
+.. |Join the chat at https://gitter.im/gabrielfalcao/sure| image:: https://badges.gitter.im/gabrielfalcao/sure.svg
+   :target: https://gitter.im/gabrielfalcao/sure?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+   :alt: Gitter Link
+
 
 
 Install
