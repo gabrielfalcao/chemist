@@ -11,8 +11,10 @@ Welcome to Flask Chemist's documentation!
    :caption: Contents:
 
 
-   intro
+   tutorial
    api
+   using-alembic
+
 
 Indices and tables
 ==================
