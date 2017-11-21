@@ -21,7 +21,7 @@ Declaring a model
 
     class User(Model):
         table = db.Table(
-            'md_user',
+            'auth_user',
             metadata,
             db.Column('id', db.Integer, primary_key=True),
             db.Column('email', db.String(100), nullable=False, unique=True),
@@ -79,6 +79,10 @@ Creating new records
         'id': 1,
     }
 
+    same_user = User.get_or_create(**data)
+    assert same_user.id == created.id
+
+
 Querying
 --------
 
@@ -107,7 +111,13 @@ Editing active records
     octocat = User.find_one_by(email='octocat@github.com')
 
     # modify in memory
+
     octocat.password = 'much more secure'
+    # or ...
+    octocat.set(
+        password='much more secure',
+        email='octocat@gmail.com',
+    )
 
     # save changes (commit transaction and flush db session)
     octocat.save()
@@ -116,10 +126,11 @@ Editing active records
     # or ...
 
     # modify and save changes in a single call
-    octocat.set(
+    saved_cat = octocat.update_and_save(
         password='even more secure now',
         email='octocat@protonmail.com',
     )
+    assert saved_cat == octocat
 
 
 Deleting

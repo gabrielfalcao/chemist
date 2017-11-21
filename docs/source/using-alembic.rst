@@ -45,8 +45,7 @@ Modifying Columns
 ``script.py.mako``
 ------------------
 
-.. code:: python
-
+.. code:: mako
 
     # -*- coding: utf-8 -*-
     # flake8: noqa

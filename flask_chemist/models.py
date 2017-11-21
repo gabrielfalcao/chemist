@@ -22,8 +22,28 @@ from flask_chemist.exceptions import InvalidModelDeclaration
 
 
 class Model(object):
-    '''
-    '''
+    """Super-class of active record models.
+
+    **Example:**
+
+    ::
+
+      class BlogPost(Mode):
+          table = db.Table(
+              'blog_post',
+              metadata,
+              db.Column('id', db.Integer, primary_key=True),
+              db.Column('title', db.Unicode(200), nullable=False),
+              db.Column('slug', db.Unicode(200), nullable=False),
+              db.Column('content', db.UnicodeText, nullable=False),
+         )
+
+          def preprocess(self, data):
+              # always derive slug from title
+              data['slug'] = slugify(data['title'])
+              return data
+    """
+
     __metaclass__ = ORM
     __primary_key_name__ = 'id'
     manager = Manager
@@ -101,7 +121,25 @@ class Model(object):
 
     def preprocess(self, data):
         """Placeholder for your own custom preprocess method, remember
-        it must return a dictionary"""
+        it must return a dictionary.
+
+        ::
+
+          class BlogPost(Mode):
+              table = db.Table(
+                  'blog_post',
+                  metadata,
+                  db.Column('id', db.Integer, primary_key=True),
+                  db.Column('title', db.Unicode(200), nullable=False),
+                  db.Column('slug', db.Unicode(200), nullable=False),
+                  db.Column('content', db.UnicodeText, nullable=False),
+             )
+
+              def preprocess(self, data):
+                  # always derive slug from title
+                  data['slug'] = slugify(data['title'])
+                  return data
+        """
         return data
 
     def get_encryption_box_for_attribute(self, attr):
@@ -184,6 +222,18 @@ class Model(object):
         key-values.
 
         This method can be overwritten by subclasses at will.
+
+        **Example:**
+
+        ::
+
+          >>> post = BlogPost.create(title='Some Title', content='loren ipsum')
+          >>> post.to_dict()
+          {
+            'id': 1,
+            'title': 'Some Title',
+            'slug': 'some-title',
+          }
         """
         return self.serialize()
 
@@ -201,6 +251,21 @@ class Model(object):
         return dict([(k, self.serialize_value(k, self.__data__.get(k))) for k in self.__columns__.keys()])
 
     def to_insert_params(self):
+        """utility method used internally to generate a dict with all the
+        serialized values except primary keys.
+
+        **Example:**
+
+        ::
+
+          >>> post = BlogPost.create(title='Some Title', content='loren ipsum')
+          >>> post.to_insert_params()
+          {
+            'title': 'Some Title',
+            'slug': 'some-title',
+          }
+
+        """
         pre_data = Model.serialize(self)
         data = {}
 
@@ -250,17 +315,23 @@ class Model(object):
         return result
 
     def pre_delete(self):
-        pass
+        """called right before executing a deletion.
+        This method can be overwritten by subclasses in order to take any domain-related action
+        """
 
     def post_delete(self):
-        pass
+        """called right after executing a deletion.
+        This method can be overwritten by subclasses in order to take any domain-related action
+        """
 
     @property
     def is_persisted(self):
+        """boolean property that returns **True** if the primary key is set.
+        This property **does not perform I/O against the database**
+        """
         return self.__class__.__primary_key_name__ in self.__data__.keys()
 
     def get_engine(self, input_engine=None):
-
         if not self.engine and not input_engine:
             raise EngineNotSpecified(
                 "You must specify a SQLAlchemy engine object in order to "
@@ -276,7 +347,7 @@ class Model(object):
         """Persists the model instance in the DB.
         It takes care of checking whether it already exists and should be just updated or if a new record should be created.
         """
-        self.before_save()
+        self.pre_save()
 
         conn = self.get_engine(input_engine).connect()
         primary_key_column_name = self.__class__.__primary_key_name__
@@ -292,18 +363,35 @@ class Model(object):
                 self.table.update().values(**self.to_insert_params()).where(self.table.c.id == mid))
             self.__data__.update(res.last_updated_params())
 
+        self.post_save()
+
         return self
 
-    def before_save(self):
-        pass
+    def pre_save(self):
+        """called right before executing a save.
+        This method can be overwritten by subclasses in order to take any domain-related action
+        """
+
+    def post_save(self):
+        """called right after executing a save.
+        This method can be overwritten by subclasses in order to take any domain-related action
+        """
 
     def refresh(self):
+        """updates the current record with fresh values retrieved by
+        :py:meth:`find_one_by` and also returns a brand new instance.
+
+        .. note:: any unsaved changes in the model will be lost upon
+                  calling this method.
+
+        """
         new = self.find_one_by(id=self.id)
         self.set(**new.__data__)
-        return self
+        return new
 
     def set(self, **kw):
-        """Sets multiple fields"""
+        """Sets multiple fields, does not perform a save operation
+        """
         cols = self.__columns__.keys()
 
         for name, value in kw.items():
@@ -311,7 +399,7 @@ class Model(object):
                 raise InvalidColumnName('{0}.{1}'.format(self, name))
             setattr(self, name, value)
 
-        return self
+        return self.save()
 
     def update_and_save(self, **kw):
         """Sets multiple fields then saves them"""
@@ -323,7 +411,9 @@ class Model(object):
         return self.__data__.get(name, fallback)
 
     def initialize(self):
-        """Dummy method to be optionally overwritten in the subclasses"""
+        """Dummy method to be optionally overwritten in the subclasses.
+        Gets automatically called once a model instance is constructed.
+        """
 
     def __eq__(self, other):
         """Just making sure models are comparable to each other"""

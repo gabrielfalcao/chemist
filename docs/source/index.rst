@@ -13,6 +13,7 @@ Welcome to Flask Chemist's documentation!
 
    tutorial
    api
+   using-flask
    using-alembic
 
 
