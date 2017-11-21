@@ -30,7 +30,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Flask Chemist'
+project = u'Chemist'
 copyright = u'2017, Gabriel Falcão'
 author = u'Gabriel Falcão'
 
