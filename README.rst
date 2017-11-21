@@ -28,6 +28,12 @@ Install
    pip install chemist
 
 
+Documentation
+-------------
+
+**[chemist.readthedocs.io](https://chemist.readthedocs.io/en/latest/)**
+
+
 Basic Usage
 -----------
 
