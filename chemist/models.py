@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import __builtin__
+import re
 import json
 import nacl.secret
 import nacl.utils
@@ -396,8 +397,12 @@ class Model(object):
         """Sets multiple fields, does not perform a save operation
         """
         cols = self.__columns__.keys()
+        pk_regex = re.compile(r'^{}_\d+$'.format(self.__primary_key_name__))
 
         for name, value in kw.items():
+            if pk_regex.match(name):
+                continue
+
             if name not in cols:
                 raise InvalidColumnName('{0}.{1}'.format(self, name))
             setattr(self, name, value)
