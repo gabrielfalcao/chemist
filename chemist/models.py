@@ -184,7 +184,7 @@ class Model(object):
 
         date_types = (datetime.datetime, datetime.date, datetime.time)
         if isinstance(value, date_types):
-            return value
+            return value.isoformat()
 
         if not value:
             return value
