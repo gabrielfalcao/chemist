@@ -399,7 +399,7 @@ class Model(object):
                 raise InvalidColumnName('{0}.{1}'.format(self, name))
             setattr(self, name, value)
 
-        return self.save()
+        return self
 
     def update_and_save(self, **kw):
         """Sets multiple fields then saves them"""

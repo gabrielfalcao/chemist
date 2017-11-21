@@ -1,10 +1,10 @@
 tests: unit functional
 
 unit:
-	nosetests tests/unit
+	nosetests tests/unit --rednose
 
 functional:
-	nosetests tests/functional
+	nosetests tests/functional --with-spec --spec-color
 
 docs:
 	cd docs && make html
