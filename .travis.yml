@@ -33,7 +33,7 @@ install:
   - pip install -r development.txt
 
 # command to run tests
-script: nosetests --verbosity 2 --with-spec --spec-color
+script: nosetests --verbosity 2 --with-spec --spec-color tests/unit tests/functional
 
 # automated pypi releases
 deploy:

@@ -184,7 +184,7 @@ class Model(object):
 
         date_types = (datetime.datetime, datetime.date, datetime.time)
         if isinstance(value, date_types):
-            return value.isoformat()
+            return value
 
         if not value:
             return value
@@ -353,15 +353,18 @@ class Model(object):
         primary_key_column_name = self.__class__.__primary_key_name__
         mid = self.__data__.get(primary_key_column_name, None)
         if mid is None:
-            res = conn.execute(
-                self.table.insert().values(**self.to_insert_params()))
+            values = self.to_insert_params()
+            res = conn.execute(self.table.insert().values(**values))
 
-            self.__data__[primary_key_column_name] = res.inserted_primary_key[0]
-            self.__data__.update(res.last_inserted_params())
+            primary_keys = {
+                primary_key_column_name: res.inserted_primary_key[0]
+            }
+            self.set(**dict(primary_keys))
+            self.set(**dict(res.last_inserted_params()))
         else:
             res = conn.execute(
                 self.table.update().values(**self.to_insert_params()).where(self.table.c.id == mid))
-            self.__data__.update(res.last_updated_params())
+            self.set(**dict(res.last_updated_params()))
 
         self.post_save()
 
@@ -398,6 +401,7 @@ class Model(object):
             if name not in cols:
                 raise InvalidColumnName('{0}.{1}'.format(self, name))
             setattr(self, name, value)
+            self.__data__[name] = value
 
         return self
 
