@@ -15,9 +15,9 @@ A simple, flexible and testable active-record powered by SQLAlchemy.
 
 
    tutorial
-   api
    using-flask
    using-alembic
+   api
 
 
 Indices and tables
