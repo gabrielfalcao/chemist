@@ -12,7 +12,7 @@ html-docs:
 docs: html-docs
 	open docs/build/html/index.html
 
-new-release:
+release:
 	@rm -rf dist/*
 	@./.release
 	@make pypi
