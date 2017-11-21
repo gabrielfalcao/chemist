@@ -6,8 +6,16 @@ unit:
 functional:
 	nosetests tests/functional --with-spec --spec-color
 
-docs:
+html-docs:
 	cd docs && make html
-	#open docs/build/html/index.html
+
+docs: html-docs
+	open docs/build/html/index.html
+
+release:
+	@rm -rf dist/*
+	@./.release
+	@python setup.py build sdist
+	@twine upload dist/*.tar.gz
 
 .PHONY: docs
