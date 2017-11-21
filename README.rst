@@ -11,15 +11,12 @@ A simple, flexible and testable active-record powered by SQLAlchemy.
 .. image:: https://readthedocs.org/projects/chemist/badge/?version=latest
    :target: http://chemist.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. |Build Status| image:: https://travis-ci.org/gabrielfalcao/sure.png?branch=master
-   :target: https://travis-ci.org/gabrielfalcao/sure
-   :alt: Build Status
-.. |PyPI python versions| image:: https://img.shields.io/pypi/pyversions/sure.svg
-   :target: https://pypi.python.org/pypi/sure
-   :alt: PyPI versions from shields.io
-.. |Join the chat at https://gitter.im/gabrielfalcao/sure| image:: https://badges.gitter.im/gabrielfalcao/sure.svg
-   :target: https://gitter.im/gabrielfalcao/sure?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-   :alt: Gitter Link
+.. image:: https://travis-ci.org/gabrielfalcao/chemist.svg?branch=master
+    :target: https://travis-ci.org/gabrielfalcao/chemist
+.. |PyPI python versions| image:: https://img.shields.io/pypi/pyversions/chemist.svg
+   :target: https://pypi.python.org/pypi/chemist
+.. |Join the chat at https://gitter.im/gabrielfalcao/chemist| image:: https://badges.gitter.im/gabrielfalcao/chemist.svg
+   :target: https://gitter.im/gabrielfalcao/chemist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 
 
