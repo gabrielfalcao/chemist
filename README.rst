@@ -14,9 +14,6 @@ A simple, flexible and testable active-record powered by SQLAlchemy.
 .. |Build Status| image:: https://travis-ci.org/gabrielfalcao/sure.png?branch=master
    :target: https://travis-ci.org/gabrielfalcao/sure
    :alt: Build Status
-.. |PyPI package version| image:: https://badge.fury.io/py/sure.svg
-   :target: https://badge.fury.io/py/sure
-   :alt: PyPI versions from fury.io
 .. |PyPI python versions| image:: https://img.shields.io/pypi/pyversions/sure.svg
    :target: https://pypi.python.org/pypi/sure
    :alt: PyPI versions from shields.io
