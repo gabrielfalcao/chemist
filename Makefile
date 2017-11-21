@@ -12,9 +12,12 @@ html-docs:
 docs: html-docs
 	open docs/build/html/index.html
 
-release:
+new-release:
 	@rm -rf dist/*
 	@./.release
+	@make pypi
+
+pypi:
 	@python setup.py build sdist
 	@twine upload dist/*.tar.gz
 
