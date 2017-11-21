@@ -114,7 +114,7 @@ def test_model_to_dict():
 
     j = ExquisiteModel(score=Decimal('2.3'), created_at=datetime(2010, 10, 10))
 
-    j.to_dict().should.equal({'score': '2.30', 'created_at': datetime(2010, 10, 10, 0, 0), 'id': None})
+    j.to_dict().should.equal({'score': '2.30', 'created_at': '2010-10-10T00:00:00', 'id': None})
 
 
 def test_preprocess_should_return_dict():
