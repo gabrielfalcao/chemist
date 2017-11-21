@@ -57,9 +57,9 @@ Basic Usage
 
     post1 = BlogPost.create(title='Hello World', content='\n'.join([
         'Introduction...',
-        'Supporing Theory 1...',
-        'Supporing Theory 2...',
-        'Supporing Theory 3...',
+        'Supporting Theory 1...',
+        'Supporting Theory 2...',
+        'Supporting Theory 3...',
         'Conclusion',
     ]))
 
