@@ -60,3 +60,9 @@ Basic Usage
 
     for post in BlogPost.all():
         print(post.title, post.id)
+
+
+Examples
+--------
+
+- [flask app](examples/flask-app.py)
