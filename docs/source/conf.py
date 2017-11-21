@@ -7,7 +7,7 @@ from plant import Node
 sys.path.insert(0, Node(__file__).dir.join('../..'))
 
 
-from flask_chemist.version import version
+from chemist.version import version
 
 
 extensions = [

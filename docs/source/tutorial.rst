@@ -4,6 +4,14 @@ Quick Start
 ===========
 
 
+Install
+-------
+
+.. code:: bash
+
+   pip install chemist
+
+
 Declaring a model
 -----------------
 
@@ -11,7 +19,7 @@ Declaring a model
 .. code:: python
 
     import bcrypt
-    from flask_chemist import (
+    from chemist import (
         Model, db, MetaData,
         set_engine,
     )

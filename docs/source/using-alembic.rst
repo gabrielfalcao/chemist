@@ -42,7 +42,7 @@ Modifying Columns
 
 
 
-``script.py.mako``
+Migration template (``script.py.mako``)
 ------------------
 
 .. code:: mako

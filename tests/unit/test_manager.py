@@ -3,7 +3,7 @@
 import sqlalchemy as db
 from mock import patch, call, Mock
 from datetime import datetime
-from flask_chemist import (
+from chemist import (
     Model,
     Manager,
     InvalidColumnName,
@@ -65,7 +65,7 @@ def test_manager_find_one_by():
     result.should.equal("the results")
 
 
-@patch('flask_chemist.managers.partial')
+@patch('chemist.managers.partial')
 def test_manager_find_by(partial):
     ("Manager#find_one_by finds all records matching the keyword arguments.")
 
@@ -626,7 +626,7 @@ def test_generate_query_by_order_by_ascending():
     )
 
 
-@patch('flask_chemist.managers.Manager.from_result_proxy')
+@patch('chemist.managers.Manager.from_result_proxy')
 def test_many_from_result_proxy(from_result_proxy):
     "Manager#many_from_result_proxy should call "
     "from_result_proxy on each item found in proxy.fetchall()"
@@ -649,8 +649,8 @@ def test_many_from_result_proxy(from_result_proxy):
     result.should.equal(['bound1', 'bound2'])
 
 
-@patch('flask_chemist.managers.Manager.get_connection')
-@patch('flask_chemist.managers.Manager.many_from_result_proxy')
+@patch('chemist.managers.Manager.get_connection')
+@patch('chemist.managers.Manager.many_from_result_proxy')
 def test_many_from_query(
         many_from_result_proxy, get_connection):
     ("Manager#many_from_query should execute the given "
@@ -671,8 +671,8 @@ def test_many_from_query(
     many_from_result_proxy.assert_called_once_with(proxy)
 
 
-@patch('flask_chemist.managers.Manager.get_connection')
-@patch('flask_chemist.managers.Manager.from_result_proxy')
+@patch('chemist.managers.Manager.get_connection')
+@patch('chemist.managers.Manager.from_result_proxy')
 def test_one_from_query(
         from_result_proxy, get_connection):
     ("Manager#one_from_query should execute the given "

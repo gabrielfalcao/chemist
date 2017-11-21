@@ -27,7 +27,7 @@ class VersionFinder(ast.NodeVisitor):
 
 def read_version():
     finder = VersionFinder()
-    finder.visit(ast.parse(local_file('flask_chemist', 'version.py')))
+    finder.visit(ast.parse(local_file('chemist', 'version.py')))
     return finder.version
 
 
@@ -36,11 +36,11 @@ def read_requirements():
 
 
 setup(
-    name='flask_chemist',
+    name='chemist',
     version=read_version(),
     description='',
     entry_points={
-        'console_scripts': ['flask_chemist = flask_chemist.console:entrypoint'],
+        'console_scripts': ['chemist = chemist.console:entrypoint'],
     },
     author='Gabriel Falcao',
     author_email='gabriel@nacaolivre.org',
@@ -48,7 +48,7 @@ setup(
     install_requires=read_requirements(),
     include_package_data=True,
     package_data={
-        'flask_chemist': ' '.join([
+        'chemist': ' '.join([
             '*.cfg',
             '*.py',
             '*.rst',

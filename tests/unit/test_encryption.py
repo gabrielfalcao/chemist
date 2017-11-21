@@ -3,7 +3,7 @@
 
 import sqlalchemy as db
 from mock import patch, Mock
-from flask_chemist import Model
+from chemist import Model
 
 
 metadata = db.MetaData()
@@ -19,8 +19,8 @@ class FakeEncryptionModel(Model):
     }
 
 
-@patch('flask_chemist.models.nacl.utils.random')
-@patch('flask_chemist.models.nacl.secret.SecretBox')
+@patch('chemist.models.nacl.utils.random')
+@patch('chemist.models.nacl.secret.SecretBox')
 def test_model_get_encryption_box_for_attribute(SecretBox, random):
     ("Model.get_encryption_box_for_attribute should return a SecretBox")
 
@@ -33,8 +33,8 @@ def test_model_get_encryption_box_for_attribute(SecretBox, random):
     SecretBox.assert_called_once_with('fake-encryption-key1')
 
 
-@patch('flask_chemist.models.nacl.utils.random')
-@patch('flask_chemist.models.nacl.secret.SecretBox')
+@patch('chemist.models.nacl.utils.random')
+@patch('chemist.models.nacl.secret.SecretBox')
 def test_model_encrypt_value(SecretBox, random):
     "Model.encrypt_attribute should use a SecretBox and a nonce to encrypt the data"
 
@@ -55,7 +55,7 @@ def test_model_encrypt_value(SecretBox, random):
     random.assert_called_once_with(4269)
 
 
-@patch('flask_chemist.models.nacl.secret.SecretBox')
+@patch('chemist.models.nacl.secret.SecretBox')
 def test_model_decrypt_value(SecretBox):
     "Model.decrypt_attribute should use a secret box to decrypt the data"
 
@@ -74,7 +74,7 @@ def test_model_decrypt_value(SecretBox):
     box_mock.decrypt.assert_called_once_with(b'THIS|IS|ENCRYPTED|DATA')
 
 
-@patch('flask_chemist.models.nacl.secret.SecretBox')
+@patch('chemist.models.nacl.secret.SecretBox')
 def test_decrypt_value_already_decrypted(SecretBox):
     "Model.decrypt_attribute should ignore ValueError"
 

@@ -12,7 +12,7 @@ A simple application
 
     import json
     from flask import Flask, request
-    from flask_chemist import (
+    from chemist import (
         Model, db, MetaData,
         set_engine,
     )

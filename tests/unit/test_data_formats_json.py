@@ -5,7 +5,7 @@ import json
 from mock import patch
 from datetime import datetime, date, time
 
-from flask_chemist.serializers.json import json_converter, loads, dumps
+from chemist.serializers.json import json_converter, loads, dumps
 
 
 def test_json_converter_should_convert_datetime():
@@ -61,7 +61,7 @@ def test_json_converter_should_yield_string():
     serialized.should.equal('"COOL"')
 
 
-@patch('flask_chemist.serializers.json.json')
+@patch('chemist.serializers.json.json')
 def test_loads_is_proxy_to_real_json_loads(json):
     ("framework.formats.json.loads should be a proxy to json.loads")
 
@@ -69,8 +69,8 @@ def test_loads_is_proxy_to_real_json_loads(json):
     json.loads.assert_called_once_with(1, foo='bar')
 
 
-@patch('flask_chemist.serializers.json.json')
-@patch('flask_chemist.serializers.json.json_converter')
+@patch('chemist.serializers.json.json')
+@patch('chemist.serializers.json.json_converter')
 def test_dumps_sets_default_json_converter(json_converter, json):
     ("framework.formats.json.loads should be a proxy to json.loads")
 

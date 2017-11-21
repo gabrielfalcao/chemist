@@ -8,17 +8,17 @@ import datetime
 from decimal import Decimal
 import dateutil.parser
 
-from flask_chemist.orm import ORM
-from flask_chemist.orm import get_engine
-from flask_chemist.orm import format_decimal
+from chemist.orm import ORM
+from chemist.orm import get_engine
+from chemist.orm import format_decimal
 
-from flask_chemist.managers import Manager
+from chemist.managers import Manager
 
-from flask_chemist.exceptions import FieldTypeValueError
-from flask_chemist.exceptions import MultipleEnginesSpecified
-from flask_chemist.exceptions import EngineNotSpecified
-from flask_chemist.exceptions import InvalidColumnName
-from flask_chemist.exceptions import InvalidModelDeclaration
+from chemist.exceptions import FieldTypeValueError
+from chemist.exceptions import MultipleEnginesSpecified
+from chemist.exceptions import EngineNotSpecified
+from chemist.exceptions import InvalidColumnName
+from chemist.exceptions import InvalidModelDeclaration
 
 
 class Model(object):

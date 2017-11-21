@@ -6,7 +6,7 @@ import sqlalchemy as db
 from mock import patch, Mock
 from datetime import datetime
 from decimal import Decimal
-from flask_chemist import (
+from chemist import (
     Model,
     Manager,
     InvalidModelDeclaration,

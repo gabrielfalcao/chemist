@@ -5,13 +5,13 @@ API Reference
 =============
 
 
-.. automodule:: flask_chemist.managers
+.. automodule:: chemist.managers
    :members:
 
 
-.. automodule:: flask_chemist.orm
+.. automodule:: chemist.orm
    :members:
 
 
-.. automodule:: flask_chemist.models
+.. automodule:: chemist.models
    :members:

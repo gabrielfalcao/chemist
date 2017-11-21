@@ -3,7 +3,7 @@ from sure import scenario
 from mock import Mock
 from datetime import datetime
 from decimal import Decimal
-from flask_chemist import (
+from chemist import (
     Model, db, MetaData,
     set_engine,
     InvalidModelDeclaration,

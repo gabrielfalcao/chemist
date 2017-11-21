@@ -3,8 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Flask Chemist's documentation!
-=========================================
+Chemist
+=======
+
+A simple, flexible and testable active-record powered by SQLAlchemy.
+
 
 .. toctree::
    :maxdepth: 2

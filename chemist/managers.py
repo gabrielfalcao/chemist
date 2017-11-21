@@ -4,8 +4,8 @@ import sqlalchemy as db
 from uuid import uuid4
 from functools import partial
 
-from flask_chemist.exceptions import InvalidColumnName
-from flask_chemist.exceptions import InvalidQueryModifier
+from chemist.exceptions import InvalidColumnName
+from chemist.exceptions import InvalidQueryModifier
 
 
 def escape_query(query, escape='#'):

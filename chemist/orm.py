@@ -78,7 +78,7 @@ def AutoUUID(name='uuid'):
     return db.Column(name, db.String(32), default=generate_uuid)
 
 def is_builtin_model(target):
-    return target.__module__.startswith('flask_chemist.') and target.__name__ in ('ORM', 'Model')
+    return target.__module__.startswith('chemist.') and target.__name__ in ('ORM', 'Model')
 
 
 class ORM(type):
