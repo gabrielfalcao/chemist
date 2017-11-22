@@ -31,7 +31,7 @@ Install
 Documentation
 -------------
 
-[chemist.readthedocs.io](https://chemist.readthedocs.io/en/latest/)
+`chemist.readthedocs.io <https://chemist.readthedocs.io/en/latest/>`_
 
 
 Basic Usage
@@ -71,4 +71,4 @@ Basic Usage
 Examples
 --------
 
-- `flask app <examples/flask-app.py>`_
+1. `flask app <examples/flask-app.py>`_
