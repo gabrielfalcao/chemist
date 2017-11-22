@@ -71,4 +71,4 @@ Basic Usage
 Examples
 --------
 
-- [flask app](examples/flask-app.py)
+- `flask app <examples/flask-app.py>`_
