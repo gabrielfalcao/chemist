@@ -49,24 +49,19 @@ def read_readme():
 
 
 setup(
-    name='chemist',
-    version=read_version(),
-    description=read_readme(),
     author='Gabriel Falcao',
     author_email='gabriel@nacaolivre.org',
-    maintainer='Gabriel Falcao',
-    maintainer_email='gabriel@nacaolivre.org',
+    description=read_version(),
+    include_package_data=True,
+    install_requires=read_requirements(),
+    long_description=read_readme(),
+    name='chemist',
+    packages=find_packages(exclude=['*tests*']),
+    test_suite='nose.collector',
+    version=read_version(),
     entry_points={
         'console_scripts': ['chemist = chemist.console:entrypoint'],
     },
-    author='Gabriel Falcao',
-    author_email='gabriel@nacaolivre.org',
-    packages=find_packages(exclude=['*tests*']),
-    install_requires=read_requirements(),
-    test_suite='nose.collector',
-    include_package_data=True,
-    description=__doc__,
-    long_description=read_readme(),
     package_data={
         'chemist': ' '.join([
             '*.cfg',
@@ -88,6 +83,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: Implementation',
         'Programming Language :: Python :: Implementation :: CPython',
-    ]
+    ],
     zip_safe=False,
 )
