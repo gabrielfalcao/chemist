@@ -24,7 +24,7 @@ class Manager(object):
 
     def from_result_proxy(self, proxy, result):
         """Creates a new instance of the model given
-        a sqlalchemy result proxy"""
+        an instance of :py:class:`sqlalchemy.engine.ResultProxy`"""
         if not result:
             return None
 

@@ -94,7 +94,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'FlaskChemistdoc'
+htmlhelp_basename = 'Chemistdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -121,7 +121,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'FlaskChemist.tex', u'Flask Chemist Documentation',
+    (master_doc, 'Chemist.tex', u'Flask Chemist Documentation',
      u'Gabriel Falcão', 'manual'),
 ]
 
@@ -131,7 +131,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'flaskchemist', u'Flask Chemist Documentation',
+    (master_doc, 'chemist', u'Flask Chemist Documentation',
      [author], 1)
 ]
 
@@ -142,12 +142,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'FlaskChemist', u'Flask Chemist Documentation',
-     author, 'FlaskChemist', 'One line description of project.',
+    (master_doc, 'Chemist', u'Flask Chemist Documentation',
+     author, 'Chemist', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 
 # -- Options for Epub output ----------------------------------------------
 
@@ -168,8 +166,7 @@ epub_copyright = copyright
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
-
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'https://docs.python.org/': None,
+    'http://docs.sqlalchemy.org/en/latest/': 'sqlalchemy'
+}
