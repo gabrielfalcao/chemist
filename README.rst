@@ -71,4 +71,4 @@ Basic Usage
 Examples
 --------
 
-1. `flask app <examples/flask-app.py>`_
+1. `flask app <https://github.com/gabrielfalcao/chemist/blob/master/examples/flask-app.py>`_
