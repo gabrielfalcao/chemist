@@ -108,7 +108,7 @@ def test_model_represented_as_string():
     ("A Model should have a string representation")
 
     u = DummyUserModel(id=1, name='Gabriel', age=25)
-    repr(u).should.equal(b'<DummyUserModel id=1>')
+    repr(u).should.equal('<DummyUserModel id=1>')
 
 
 def test_model_to_dict():

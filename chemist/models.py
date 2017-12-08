@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import __builtin__
+from six.moves import builtins as __builtin__
+
 import re
 import json
 import nacl.secret
@@ -7,6 +8,8 @@ import nacl.utils
 import inspect
 import datetime
 from decimal import Decimal
+from collections import OrderedDict
+from six import with_metaclass
 import dateutil.parser
 
 from chemist.orm import ORM
@@ -22,7 +25,7 @@ from chemist.exceptions import InvalidColumnName
 from chemist.exceptions import InvalidModelDeclaration
 
 
-class Model(object):
+class Model(with_metaclass(ORM, object)):
     """Super-class of active record models.
 
     **Example:**
@@ -45,7 +48,6 @@ class Model(object):
               return data
     """
 
-    __metaclass__ = ORM
     __primary_key_name__ = 'id'
     manager = Manager
 
@@ -90,7 +92,8 @@ class Model(object):
         Model = self.__class__
         module = Model.__module__
         name = Model.__name__
-        columns = self.__columns__.keys()
+        columns = self.__columns__
+
         for key, value in data.items():
             data[key] = self.decrypt_attribute(key, value)
 
@@ -105,10 +108,10 @@ class Model(object):
 
         self.engine = engine
 
-        for k, v in data.iteritems():
+        for k, v in data.items():
             if k not in self.__columns__:
                 msg = "{0} is not a valid column name for the model {2}.{1} ({3})"
-                raise InvalidColumnName(msg.format(k, name, module, columns))
+                raise InvalidColumnName(msg.format(k, name, module, sorted(columns.keys())))
 
             if callable(v):
                 v = v()
@@ -144,7 +147,7 @@ class Model(object):
         return data
 
     def get_encryption_box_for_attribute(self, attr):
-        keymap = dict(getattr(self, 'encryption', {}))
+        keymap = dict(getattr(self, 'encryption', None) or {})
         if attr not in keymap:
             return
 
@@ -248,7 +251,7 @@ class Model(object):
         self).to_dict()`
         """
 
-        keys = self.__columns__.keys()
+        keys = list(self.__columns__.keys())
         return dict([(k, self.serialize_value(k, self.__data__.get(k))) for k in self.__columns__.keys()])
 
     def to_insert_params(self):
@@ -268,13 +271,13 @@ class Model(object):
 
         """
         pre_data = Model.serialize(self)
-        data = {}
+        data = OrderedDict()
 
         for k, v in pre_data.items():
             data[k] = self.encrypt_attribute(k, v)
 
         primary_key_names = [x.name for x in self.table.primary_key.columns]
-        keys_to_pluck = filter(lambda x: x not in self.__columns__, data.keys()) + primary_key_names
+        keys_to_pluck = list(filter(lambda x: x not in self.__columns__, data.keys())) + primary_key_names
 
         # not saving primary keys, let's let the SQL backend to take
         # care of auto increment.
@@ -287,18 +290,20 @@ class Model(object):
 
         return data
 
-    def to_json(self, indent=None):
+    def to_json(self, indent=None, sort_keys=True, **kw):
         """Grabs the dictionary with the current model state returned
         by `to_dict` and serializes it to JSON"""
         data = self.to_dict()
-        return json.dumps(data, indent=indent)
+        return json.dumps(data, indent=indent, sort_keys=sort_keys, **kw)
 
     def __getattr__(self, attr):
-        if attr in self.__columns__.keys():
-            value = self.__data__.get(attr, None)
-            return self.serialize_value(attr, value)
-
-        return super(Model, self).__getattribute__(attr)
+        columns = list(self.__columns__.keys())
+        try:
+            return object.__getattribute__(self, attr)
+        except AttributeError:
+            if attr in columns:
+                value = self.__data__.get(attr, None)
+                return self.serialize_value(attr, value)
 
     def delete(self):
         """Deletes the current model from the database (removes a row
@@ -429,7 +434,7 @@ class Model(object):
         if self.id and other.id:
             return self.id == other.id
 
-        keys = set(self.__data__.keys() + other.__data__.keys())
+        keys = set(list(self.__data__.keys()) + list(other.__data__.keys()))
 
         return all(
             [self.__data__.get(key) == other.__data__.get(key)

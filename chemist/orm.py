@@ -2,8 +2,8 @@
 # flake8: noqa
 
 from __future__ import unicode_literals
-import __builtin__
 
+from six.moves import builtins as __builtin__
 import logging
 import uuid
 import inspect
@@ -12,7 +12,7 @@ import datetime
 from uuid import uuid4
 from functools import partial
 from decimal import Decimal
-
+from collections import OrderedDict
 import sqlalchemy as db
 from sqlalchemy import (
     create_engine,
@@ -21,6 +21,8 @@ from sqlalchemy import (
 
 
 engine = None
+
+MODEL_REGISTRY = OrderedDict()
 
 
 def get_engine(uri=None):
@@ -89,7 +91,30 @@ class ORM(type):
         if not is_builtin_model(cls) and not hasattr(cls, 'table'):
             raise TypeError('{} must have a table attribute defined at the class level'.format(cls))
 
-        cls.__columns__ = {c.name: c.type.python_type
+
+        columns = {c.name: c.type.python_type
                            for c in cls.table.columns}
-        setattr(ORM, name, cls)
+        cls.__columns__ = columns
+        attrs['__columns__'] = columns
+        ORM.register_model_class(cls, columns)
+
         super(ORM, cls).__init__(name, bases, attrs)
+
+    @staticmethod
+    def determine_model_identity(cls):
+        return '.'.join([cls.__module__, cls.__name__])
+
+    @staticmethod
+    def register_model_class(cls, columns):
+        class_id = ORM.determine_model_identity(cls)
+        MODEL_REGISTRY[class_id] = columns
+        return cls
+
+    @staticmethod
+    def get_columns_for_model_class(cls):
+        class_id = ORM.determine_model_identity(cls)
+        return MODEL_REGISTRY.get(class_id, {}) or {}
+
+    @staticmethod
+    def get_columns_for_model_instance(instance):
+        return ORM.get_columns_for_model_class(instance.__class__)

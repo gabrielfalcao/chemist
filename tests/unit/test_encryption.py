@@ -51,7 +51,7 @@ def test_model_encrypt_value(SecretBox, random):
     result = fem.encrypt_attribute("name", 'gabriel')
 
     result.should.equal(box_mock.encrypt.return_value)
-    box_mock.encrypt.assert_called_once_with(b'gabriel', 'a random value')
+    box_mock.encrypt.assert_called_once_with('gabriel', 'a random value')
     random.assert_called_once_with(4269)
 
 
@@ -71,7 +71,7 @@ def test_model_decrypt_value(SecretBox):
     result = fem.decrypt_attribute("name", 'THIS|IS|ENCRYPTED|DATA')
 
     result.should.equal(box_mock.decrypt.return_value)
-    box_mock.decrypt.assert_called_once_with(b'THIS|IS|ENCRYPTED|DATA')
+    box_mock.decrypt.assert_called_once_with('THIS|IS|ENCRYPTED|DATA')
 
 
 @patch('chemist.models.nacl.secret.SecretBox')
@@ -90,4 +90,4 @@ def test_decrypt_value_already_decrypted(SecretBox):
     result = fem.decrypt_attribute("name", 'THIS|IS|ENCRYPTED|DATA')
 
     result.should.equal("THIS|IS|ENCRYPTED|DATA")
-    box_mock.decrypt.assert_called_once_with(b'THIS|IS|ENCRYPTED|DATA')
+    box_mock.decrypt.assert_called_once_with('THIS|IS|ENCRYPTED|DATA')

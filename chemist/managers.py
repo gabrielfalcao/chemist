@@ -33,7 +33,7 @@ class Manager(object):
 
     def many_from_result_proxy(self, proxy):
         Models = partial(self.from_result_proxy, proxy)
-        return map(Models, proxy.fetchall())
+        return list(map(Models, proxy.fetchall()))
 
     def create(self, **data):
         """Creates a new model and saves it to MySQL"""
@@ -132,7 +132,7 @@ class Manager(object):
         and match all the given keyword-arguments"""
         proxy = self.query_by(**kw)
         Models = partial(self.from_result_proxy, proxy)
-        return map(Models, proxy.fetchall())
+        return list(map(Models, proxy.fetchall()))
 
     def all(self, limit_by=None, offset_by=None):
         """Returns all existing rows as Model"""
