@@ -3,13 +3,13 @@ import json
 from flask import Flask, request
 from chemist import (
     Model, db, MetaData,
-    set_engine,
+    get_or_create_engine,
 )
 
 app = Flask(__name__)
 
 metadata = MetaData()
-engine = set_engine('sqlite:///example.db')
+engine = get_or_create_engine('sqlite:///example.db')
 
 
 class User(Model):

@@ -20,21 +20,25 @@ from sqlalchemy import (
 )
 
 
-engine = None
-
+ENGINE_REGISTRY = OrderedDict()
 MODEL_REGISTRY = OrderedDict()
 
 
-def get_engine(uri=None):
-    if not uri:
-        return globals()['engine']
+def get_first_available_engine():
+    for engine in filter(bool, ENGINE_REGISTRY.values()):
+        return engine
 
-    return set_engine(uri)
+def get_engine(uri=None, key=None):
+    if uri is None and key is None:
+        key = '__default__'
+
+    return get_or_create_engine(uri=uri, key=key)
 
 
-def set_engine(uri):
-    globals()['engine'] = create_engine(uri)
-    return globals()['engine']
+def get_or_create_engine(uri, key=None):
+    engine = ENGINE_REGISTRY.get(uri, ENGINE_REGISTRY.get(key)) or create_engine(uri)
+    ENGINE_REGISTRY[key] = engine
+    return engine
 
 
 metadata = MetaData()

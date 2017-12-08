@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import Decimal
 from chemist import (
     Model, db, MetaData,
-    set_engine,
+    get_or_create_engine,
     InvalidModelDeclaration,
     InvalidColumnName,
     EngineNotSpecified,
@@ -17,7 +17,7 @@ metadata = MetaData()
 
 
 def reset_db(context):
-    engine = set_engine('mysql://root@localhost/chemist')
+    engine = get_or_create_engine('mysql://root@localhost/chemist')
     metadata.drop_all(engine)
     metadata.create_all(engine)
 

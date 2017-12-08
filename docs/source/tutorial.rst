@@ -21,11 +21,11 @@ Declaring a model
     import bcrypt
     from chemist import (
         Model, db, MetaData,
-        set_engine,
+        get_or_create_engine,
     )
 
     metadata = MetaData()
-    engine = set_engine('sqlite:///example.db')
+    engine = get_or_create_engine('sqlite:///example.db')
 
     class User(Model):
         table = db.Table(

@@ -42,11 +42,11 @@ Basic Usage
 
     from chemist import (
         Model, db, MetaData,
-        set_engine,
+        get_or_create_engine,
     )
 
     metadata = MetaData()
-    engine = set_engine('sqlite:///example.db')
+    engine = get_or_create_engine('sqlite:///example.db')
 
     class BlogPost(Model):
           table = db.Table('blog_post',metadata,

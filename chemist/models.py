@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from six.moves import builtins as __builtin__
+from six import PY2
 
 import re
 import json
@@ -23,6 +24,12 @@ from chemist.exceptions import MultipleEnginesSpecified
 from chemist.exceptions import EngineNotSpecified
 from chemist.exceptions import InvalidColumnName
 from chemist.exceptions import InvalidModelDeclaration
+
+
+if PY2:
+    string_types = (basestring, )
+else:
+    string_types = (str, )
 
 
 class Model(with_metaclass(ORM, object)):
@@ -55,6 +62,9 @@ class Model(with_metaclass(ORM, object)):
     def using(cls, engine):
         if engine is None:
             engine = get_engine()
+
+        elif isinstance(engine, string_types):
+            engine = get_engine(uri=engine)
 
         return cls.manager(cls, engine)
 

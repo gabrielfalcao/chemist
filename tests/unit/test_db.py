@@ -363,10 +363,11 @@ def test_model_using():
 
         manager = Mock()
 
-    MyDummyUserModel.using("an engine")
+    engine_mock = Mock(name='engine')
+    MyDummyUserModel.using(engine_mock)
 
     MyDummyUserModel.manager.assert_called_once_with(
-        MyDummyUserModel, "an engine")
+        MyDummyUserModel, engine_mock)
 
 
 def test_model_is_persisted_true():
