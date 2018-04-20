@@ -168,5 +168,6 @@ epub_copyright = copyright
 epub_exclude_files = ['search.html']
 intersphinx_mapping = {
     'https://docs.python.org/': None,
-    'http://docs.sqlalchemy.org/en/latest/': 'sqlalchemy'
+    'http://docs.sqlalchemy.org/en/latest/': 'sqlalchemy',
+    'http://docs.python-requests.org/en/master/': 'requests',
 }
