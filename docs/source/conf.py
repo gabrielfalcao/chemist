@@ -167,7 +167,11 @@ epub_copyright = copyright
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 intersphinx_mapping = {
-    'https://docs.python.org/': None,
-    'http://docs.sqlalchemy.org/en/latest/': 'sqlalchemy',
-    'http://docs.python-requests.org/en/master/': 'requests',
+    'click': ('http://click.pocoo.org/latest/', None),
+    'flask': ('http://flask.pocoo.org/docs/latest/', None),
+    'flask_restplus': ('https://flask-restplus.readthedocs.io/en/stable/', None),
+    'python': ('https://docs.python.org/3', None),
+    'requests': ('http://docs.python-requests.org/en/master/', None),
+    'sqlalchemy': ('http://docs.sqlalchemy.org/en/latest/', None),
+    'yaml': ('https://yaml.readthedocs.io/en/latest/', None),
 }
