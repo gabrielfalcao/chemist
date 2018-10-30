@@ -9,7 +9,10 @@ tests: unit functional
 unit:
 	pipenv run nosetests tests/unit --rednose
 
-functional:
+db:
+	-@psql postgres -c 'create database chemist;'
+
+functional: db
 	pipenv run nosetests tests/functional --with-spec --spec-color
 
 html-docs:

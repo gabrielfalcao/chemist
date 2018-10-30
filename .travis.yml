@@ -5,10 +5,11 @@ python:
   - "3.6"
 
 services:
-  - mysql
+  - postgresql
+
 
 before_install:
-  - mysql -e 'CREATE DATABASE chemist;'
+  - psql -c 'create database chemist;' -U postgres
 
 # command to install dependencies
 install:

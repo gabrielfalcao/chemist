@@ -17,7 +17,7 @@ metadata = MetaData()
 
 
 def reset_db(context):
-    engine = get_or_create_engine('mysql://root@localhost/chemist')
+    engine = get_or_create_engine('postgresql+psycopg2://localhost/chemist')  # in memory db
     metadata.drop_all(engine)
     metadata.create_all(engine)
 
