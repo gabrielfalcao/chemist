@@ -27,6 +27,8 @@ Declaring a model
     metadata = MetaData()
     engine = get_or_create_engine('sqlite:///example.db')
 
+    CREDIT_CARD_ENCRYPTION_KEY = b'\xb3\x0f\xcc9\xc3\xb1k#\x95j4\xb3\x1f\x08\x98\xd7~6\xff\xceb\xdc\x17vW\xd7\x90\xcf\x82\x9d\xb7j'
+
     class User(Model):
         table = db.Table(
             'auth_user',
@@ -35,8 +37,14 @@ Declaring a model
             db.Column('email', db.String(100), nullable=False, unique=True),
             db.Column('password', db.String(100), nullable=False, unique=True),
             db.Column('created_at', db.DateTime, default=datetime.now),
-            db.Column('updated_at', db.DateTime, default=datetime.now)
+            db.Column('updated_at', db.DateTime, default=datetime.now),
+            db.Column('credit_card', db.String(16)),
         )
+        encryption = {
+            # transparently encrypt data data in "credit_card" field before storing on DB
+            # also transparently decrypt after retrieving data
+            'credit_card': CREDIT_CARD_ENCRYPTION_KEY,
+        }
 
         @classmethod
         def create(cls, email, password, **kw):
@@ -45,8 +53,10 @@ Declaring a model
             return super(User, cls).create(email=email, password=password, **kw)
 
         def to_dict(self):
+            # prevent password and credit-card to be returned in HTTP responses that serialize model data
             data = self.serialize()
-            data.pop('password')
+            data.pop('password', None)
+            data.pop('credit_card', None)
             return data
 
         @classmethod

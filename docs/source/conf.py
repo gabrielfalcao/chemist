@@ -169,9 +169,9 @@ epub_exclude_files = ['search.html']
 intersphinx_mapping = {
     'click': ('http://click.pocoo.org/latest/', None),
     'flask': ('http://flask.pocoo.org/docs/latest/', None),
-    'flask_restplus': ('https://flask-restplus.readthedocs.io/en/stable/', None),
+    'dateutil': ('https://dateutil.readthedocs.io/en/stable/', None),
     'python': ('https://docs.python.org/3', None),
-    'requests': ('http://docs.python-requests.org/en/master/', None),
     'sqlalchemy': ('http://docs.sqlalchemy.org/en/latest/', None),
     'yaml': ('https://yaml.readthedocs.io/en/latest/', None),
+    'nacl': ('https://pynacl.readthedocs.io/en/stable/', None),
 }

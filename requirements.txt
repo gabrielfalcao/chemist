@@ -1,5 +1,6 @@
-PyNaCl==1.2.0
-python-dateutil==2.6.1
-PyYAML==3.12
+pynacl==1.2.1
+python-dateutil==2.7.3
+pyyaml==3.13
 six==1.11.0
-SQLAlchemy==1.1.14
+sqlalchemy==1.2.12
+pytz==2018.5

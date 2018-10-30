@@ -8,6 +8,7 @@ Chemist
 
 A simple, flexible and testable active-record powered by SQLAlchemy.
 
+Supports application-level encryption powered by :py:class:`nacl.utils.SecretBox`
 
 .. toctree::
    :maxdepth: 2
