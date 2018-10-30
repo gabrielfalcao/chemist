@@ -32,6 +32,7 @@ else:
     string_types = (str, )
 
 
+
 class Model(with_metaclass(ORM, object)):
     """Super-class of active record models.
 

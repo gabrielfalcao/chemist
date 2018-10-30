@@ -2,9 +2,10 @@
 import sys
 import sphinx_rtd_theme
 
-from plant import Node
+from pathlib2 import Path
 
-sys.path.insert(0, Node(__file__).dir.join('../..'))
+
+sys.path.insert(0, Path(__file__).parent.parent.parent.resolve())
 
 
 from chemist.version import version

@@ -1,6 +1,6 @@
 pynacl==1.2.1
 python-dateutil==2.7.3
+pytz==2018.5
 pyyaml==3.13
 six==1.11.0
 sqlalchemy==1.2.12
-pytz==2018.5

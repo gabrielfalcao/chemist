@@ -12,6 +12,7 @@ pyyaml = "==3.12"
 sqlalchemy = "==1.1.14"
 
 [dev-packages]
+"pathlib2" = "*"
 nose = "*"
 pinocchio = "*"
 sphinx = "*"
@@ -23,7 +24,7 @@ mock = "*"
 coverage = "*"
 mysqlclient = "*"
 ipdb = "*"
-"psycopg2" = "*"
+"psycopg2-binary" = "*"
 
 [requires]
 python_version = "3.6"

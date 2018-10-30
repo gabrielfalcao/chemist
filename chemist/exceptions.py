@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class FieldTypeValueError(Exception):
     def __init__(self, model, attr, e):
         msg = "{}.{} value type error: {}".format(model, attr, e)
