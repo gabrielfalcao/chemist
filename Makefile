@@ -26,8 +26,10 @@ release:
 	@./.release
 	@make pypi
 
-pypi:
-	@pipenv run python setup.py build sdist
+dist: unit
+	pipenv run python setup.py build sdist
+
+pypi: dist
 	@pipenv run twine upload dist/*.tar.gz
 
-.PHONY: docs
+.PHONY: docs dist
