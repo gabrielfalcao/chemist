@@ -49,8 +49,8 @@ def read_readme():
 
 
 class extras:
-    postgres: ['psycopg2']
-    mysql: ['mysqlclient']
+    postgres = ['psycopg2']
+    mysql = ['mysqlclient']
 
 
 setup(
