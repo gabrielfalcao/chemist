@@ -48,6 +48,11 @@ def read_readme():
         return __doc__
 
 
+class extras:
+    postgres: ['psycopg2']
+    mysql: ['mysqlclient']
+
+
 setup(
     author='Gabriel Falcao',
     author_email='gabriel@nacaolivre.org',
@@ -70,6 +75,12 @@ setup(
             '*.txt',
         ]),
     },
+    extras_require={
+        'mariadb': extras.mysql,
+        'mysql': extras.mysql,
+        'postgres': extras.postgres,
+        'postgresql': extras.postgres,
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -81,6 +92,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation',
         'Programming Language :: Python :: Implementation :: CPython',
     ],

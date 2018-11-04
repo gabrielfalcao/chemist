@@ -12,6 +12,25 @@ Install
    pip install chemist
 
 
+MariaDB/MySQL
+~~~~~~~~~~~~~
+
+.. code:: bash
+
+   pip install chemist[mysql]
+   pip install chemist[mariadb]  # alias to [mysql]
+
+
+Postgres
+~~~~~~~~
+
+.. code:: bash
+
+   pip install chemist[psycopg2]
+   pip install chemist[postgres]    # alias to [psycopg2]
+   pip install chemist[postgresql]  # alias to [psycopg2]
+
+
 Declaring a model
 -----------------
 
