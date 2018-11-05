@@ -21,6 +21,11 @@ html-docs:
 docs: html-docs
 	open docs/build/html/index.html
 
+upgrade:
+	pipenv update
+	pipenv lock -r > requirements.txt
+	pipenv lock -r --dev > development.txt
+
 release:
 	@rm -rf dist/*
 	@./.release
