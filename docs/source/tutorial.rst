@@ -175,6 +175,8 @@ Deleting
 
 .. code:: python
 
+    engine = get_or_create_engine('sqlite:///example.db')
+
     octocat = User.find_one_by(email='octocat@github.com')
 
     # delete row, commit and flush session
