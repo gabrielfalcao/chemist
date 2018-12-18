@@ -56,7 +56,6 @@ class Model(with_metaclass(ORM, object)):
               return data
     """
 
-    __primary_key_name__ = 'id'
     manager = Manager
 
     @classmethod
@@ -69,6 +68,10 @@ class Model(with_metaclass(ORM, object)):
 
         return cls.manager(cls, engine)
 
+    @classmethod
+    def objects(cls):
+        return cls.using(None)
+
     create = classmethod(lambda cls, **data: cls.using(None).create(**data))
     get_or_create = classmethod(lambda cls, **data: cls.using(None).get_or_create(**data))
     query_by = classmethod(lambda cls, order_by=None, **kw: cls.using(None).query_by(order_by=order_by, **kw))
@@ -79,6 +82,8 @@ class Model(with_metaclass(ORM, object)):
     get_connection = classmethod(lambda cls, **kw: cls.using(None).get_connection())
     many_from_query = classmethod(lambda cls, query: cls.using(None).many_from_query(query))
     one_from_query = classmethod(lambda cls, query: cls.using(None).one_from_query(query))
+    where_many = classmethod(lambda cls, *args, **kw: cls.using(None).where_many(*args, **kw))
+    where_one = classmethod(lambda cls, *args, **kw: cls.using(None).where_one(*args, **kw))
 
     def __init__(self, engine=None, **data):
         '''A Model can be instantiated with keyword-arguments that
@@ -132,7 +137,7 @@ class Model(with_metaclass(ORM, object)):
         self.initialize()
 
     def __repr__(self):
-        return '<{0} id={1}>'.format(self.__class__.__name__, self.id)
+        return '<{0} {1}={2}>'.format(self.__class__.__name__, self.get_pk_name(), self.get_pk_value())
 
     def preprocess(self, data):
         """Placeholder for your own custom preprocess method, remember
@@ -308,10 +313,10 @@ class Model(with_metaclass(ORM, object)):
         return json.dumps(data, indent=indent, sort_keys=sort_keys, **kw)
 
     def __getattr__(self, attr):
-        columns = list(self.__columns__.keys())
         try:
             return object.__getattribute__(self, attr)
         except AttributeError:
+            columns = list(self.__columns__.keys())
             if attr in columns:
                 value = self.__data__.get(attr, None)
                 return self.serialize_value(attr, value)
@@ -326,7 +331,8 @@ class Model(with_metaclass(ORM, object)):
         conn = self.get_engine().connect()
 
         result = conn.execute(self.table.delete().where(
-            self.table.c.id == self.id))
+            getattr(self.table.c, self.get_pk_name()) == self.get_pk_value()
+        ))
 
         self.post_delete()
         return result
@@ -346,7 +352,7 @@ class Model(with_metaclass(ORM, object)):
         """boolean property that returns **True** if the primary key is set.
         This property **does not perform I/O against the database**
         """
-        return self.__class__.__primary_key_name__ in self.__data__.keys()
+        return self.get_pk_name() in self.__data__.keys()
 
     def get_engine(self, input_engine=None):
         if not self.engine and not input_engine:
@@ -367,7 +373,7 @@ class Model(with_metaclass(ORM, object)):
         self.pre_save()
 
         conn = self.get_engine(input_engine).connect()
-        primary_key_column_name = self.__class__.__primary_key_name__
+        primary_key_column_name = self.get_pk_name()
         mid = self.__data__.get(primary_key_column_name, None)
         if mid is None:
             values = self.to_insert_params()
@@ -380,8 +386,13 @@ class Model(with_metaclass(ORM, object)):
             self.set(**dict(res.last_inserted_params()))
         else:
             res = conn.execute(
-                self.table.update().values(**self.to_insert_params()).where(self.table.c.id == mid))
-            self.set(**dict(res.last_updated_params()))
+                self.table.update().values(**self.to_insert_params()).where(self.get_pk_col(primary_key_column_name) == mid))
+            newdata = res.last_updated_params()
+            for k in list(newdata.keys()):
+                if k.endswith('_1'):
+                    newdata[k[:-2]] = newdata.pop(k)
+
+            self.set(**dict(newdata))
 
         self.post_save()
 
@@ -405,7 +416,9 @@ class Model(with_metaclass(ORM, object)):
                   calling this method.
 
         """
-        new = self.find_one_by(id=self.id)
+        params = {}
+        params[self.get_pk_name()] = self.get_pk_value()
+        new = self.find_one_by(**params)
         self.set(**new.__data__)
         return new
 
@@ -413,7 +426,7 @@ class Model(with_metaclass(ORM, object)):
         """Sets multiple fields, does not perform a save operation
         """
         cols = self.__columns__.keys()
-        pk_regex = re.compile(r'^{}_\d+$'.format(self.__primary_key_name__))
+        pk_regex = re.compile(r'^{}_\d+$'.format(self.get_pk_name))
 
         for name, value in kw.items():
             if pk_regex.match(name):
@@ -442,11 +455,30 @@ class Model(with_metaclass(ORM, object)):
 
     def __eq__(self, other):
         """Just making sure models are comparable to each other"""
-        if self.id and other.id:
-            return self.id == other.id
+
+        matches_pk = all([
+            type(self) == type(other),
+            self.get_pk_name() == other.get_pk_name(),
+            self.get_pk_value(), other.get_pk_value(),
+        ])
+        if matches_pk:
+            return self.get_pk_value() == other.get_pk_value()
 
         keys = set(list(self.__data__.keys()) + list(other.__data__.keys()))
 
         return all(
             [self.__data__.get(key) == other.__data__.get(key)
-             for key in keys if key != self.__class__.__primary_key_name__])
+             for key in keys if key != self.get_pk_name()])
+
+    @classmethod
+    def get_pk_name(cls):
+        for name, col in cls.table.c.items():
+            if col.primary_key:
+                return name
+
+    def get_pk_value(cls):
+        return getattr(cls, cls.get_pk_name())
+
+    @classmethod
+    def get_pk_col(cls, name):
+        return getattr(cls.table.c, name)

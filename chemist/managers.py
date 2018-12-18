@@ -98,10 +98,31 @@ class Manager(object):
                 order_by = order_by[1:]
 
         query = query.order_by(db_order(
-            getattr(self.model.table.c, order_by or self.model.__primary_key_name__)
+            getattr(self.model.table.c, order_by or self.model.get_pk_name())
         ))
 
         return query
+
+    def prepare_where_clause(self, *expressions, order_by=None):
+        table = self.model.table
+        query = table.select()
+        for exp in expressions:
+            query = query.where(exp)
+
+        if isinstance(order_by, tuple):
+            query = query.order_by(*order_by)
+        elif order_by is not None:
+            raise TypeError('order_by must be a tuple of SQLAlchemy columns optionally wrapped in asc/desc modifiers')
+
+        return query
+
+    def where_many(self, *expressions, order_by=None):
+        query = self.prepare_where_clause(*expressions, order_by=order_by)
+        return self.many_from_query(query)
+
+    def where_one(self, *expressions, order_by=None):
+        query = self.prepare_where_clause(*expressions, order_by=order_by)
+        return self.one_from_query(query)
 
     def query_by(self, **kwargs):
         """This method is used internally and is not consistent with the other
@@ -143,7 +164,7 @@ class Manager(object):
 
     def total_rows(self, field_name=None, **where):
         """Gets the total number of rows in the table"""
-        field_name = field_name or self.model.__primary_key_name__
+        field_name = field_name or self.model.get_pk_name()
         conn = self.get_connection()
         query = self.model.table.count()
         for key, value in where.items():

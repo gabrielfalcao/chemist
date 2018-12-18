@@ -18,6 +18,7 @@ Supports application-level encryption powered by :py:class:`nacl.utils.SecretBox
    tutorial
    using-flask
    using-alembic
+   advanced-querying
    api
 
 
