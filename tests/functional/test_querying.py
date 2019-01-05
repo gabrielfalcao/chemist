@@ -408,9 +408,9 @@ def test_model_serialize_value_not_callable():
 
     j = ExquisiteModel()
 
-    j.serialize_value('score', '').should.equal('10.3')
-    j.serialize_value('score', False).should.equal('10.3')
-    j.serialize_value('score', None).should.equal('10.3')
+    j.serialize_value('score', '').should.equal(10.3)
+    j.serialize_value('score', False).should.equal(10.3)
+    j.serialize_value('score', None).should.equal(10.3)
 
 
 def test_model_deserialize_value():
