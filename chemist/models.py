@@ -8,6 +8,7 @@ import nacl.secret
 import nacl.utils
 import inspect
 import datetime
+import logging
 from decimal import Decimal
 from collections import OrderedDict
 from six import with_metaclass
@@ -26,12 +27,22 @@ from chemist.exceptions import InvalidColumnName
 from chemist.exceptions import InvalidModelDeclaration
 
 
+logger = logging.getLogger(__name__)
+
 if PY2:
     string_types = (basestring, )
 else:
     string_types = (str, )
 
 
+def try_json_deserialize(value, silent=False):
+    try:
+        return json.loads(value)
+    except Exception:
+        if not silent:
+            logger.warning('could not JSON deserialize value {}'.format(value))
+
+    return value
 
 class Model(with_metaclass(ORM, object)):
     """Super-class of active record models.
@@ -192,7 +203,6 @@ class Model(with_metaclass(ORM, object)):
 
     def serialize_value(self, attr, value):
         col = self.table.columns[attr]
-
         if col.default and not value:
             if col.default.is_callable:
                 value = col.default.arg(value)
@@ -211,9 +221,18 @@ class Model(with_metaclass(ORM, object)):
 
         data_type = self.__columns__.get(attr, None)
         builtins = dict(inspect.getmembers(__builtin__)).values()
+
+        value = try_json_deserialize(value, silent=True)
+
+        if col.primary_key and not value:
+            return value
+
         if data_type and not isinstance(value, data_type) and data_type in builtins:
             try:
                 return data_type(value)
+            except TypeError as e:
+                raise FieldTypeValueError(self, attr, e)
+
             except ValueError as e:
                 raise FieldTypeValueError(self, attr, e)
 
@@ -373,6 +392,7 @@ class Model(with_metaclass(ORM, object)):
         self.pre_save()
 
         conn = self.get_engine(input_engine).connect()
+        transaction = conn.begin()
         primary_key_column_name = self.get_pk_name()
         mid = self.__data__.get(primary_key_column_name, None)
         if mid is None:
@@ -394,6 +414,9 @@ class Model(with_metaclass(ORM, object)):
 
             self.set(**dict(newdata))
 
+        transaction.commit()
+        # transaction.flush()
+        conn.close()
         self.post_save()
 
         return self

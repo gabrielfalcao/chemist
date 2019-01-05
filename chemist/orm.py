@@ -35,8 +35,8 @@ def get_engine(uri=None, key=None):
     return get_or_create_engine(uri=uri, key=key)
 
 
-def get_or_create_engine(uri, key=None):
-    engine = ENGINE_REGISTRY.get(uri, ENGINE_REGISTRY.get(key)) or create_engine(uri)
+def get_or_create_engine(uri, key=None, **kwargs):
+    engine = ENGINE_REGISTRY.get(uri, ENGINE_REGISTRY.get(key)) or create_engine(uri, **kwargs)
     ENGINE_REGISTRY[key] = engine
     return engine
 
