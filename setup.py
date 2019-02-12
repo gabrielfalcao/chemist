@@ -49,7 +49,7 @@ def read_readme():
 
 
 class extras:
-    postgres = ['psycopg2']
+    postgres = ['psycopg2', 'psycopg2-binary']
     mysql = ['mysqlclient']
 
 
