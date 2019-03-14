@@ -1,6 +1,6 @@
 deps:
 	@(2>&1 which pipenv > /dev/null) || pip install pipenv
-	@pipenv install --dev
+	@pipenv install --dev --pre
 	@pipenv run python setup.py develop
 
 tests: unit functional

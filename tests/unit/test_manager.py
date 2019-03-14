@@ -452,10 +452,7 @@ def test_query_by_startswith():
     # And the SQL should be correct
     x = connection_mock.execute.call_args[0][0]
     str(x).should.equal(
-        "SELECT dummy_user_model.id, dummy_user_model.name,"
-        " dummy_user_model.age \nFROM dummy_user_model \nWHERE"
-        " (dummy_user_model.name LIKE :name_1 || '%%') ORDER BY"
-        " dummy_user_model.id DESC"
+        "SELECT dummy_user_model.id, dummy_user_model.name, dummy_user_model.age \nFROM dummy_user_model \nWHERE (dummy_user_model.name LIKE :name_1 || '%') ORDER BY dummy_user_model.id DESC"
     )
 
 
@@ -490,7 +487,7 @@ def test_query_by_contains():
     str(x).should.equal(
         "SELECT dummy_user_model.id, dummy_user_model.name, "
         "dummy_user_model.age \nFROM dummy_user_model \nWHERE "
-        "(dummy_user_model.name LIKE '%%' || :name_1 || '%%' ESCAPE '#') "
+        "(dummy_user_model.name LIKE '%' || :name_1 || '%' ESCAPE '#') "
         "ORDER BY dummy_user_model.id DESC"
     )
 
