@@ -2,3 +2,4 @@ docs/build/
 functional-tests.db
 build/
 dist/
+.venv/

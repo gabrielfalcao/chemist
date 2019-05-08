@@ -3,6 +3,7 @@ sudo: false
 python:
   - "2.7"
   - "3.6"
+  - "3.7"
 
 services:
   - postgresql
@@ -13,13 +14,13 @@ before_install:
 
 # command to install dependencies
 install:
-  - pip install -U --no-cache-dir pipenv
-  - pipenv install --dev
-  - pipenv run python setup.py develop
-  - pipenv run python setup.py build sdist
+  - pip install -U --no-cache-dir poetry
+  - poetry install
+  - poetry run python setup.py develop
+  - poetry run python setup.py build sdist
 
 # command to run tests
-script: nosetests --verbosity 2 --with-spec --spec-color tests/unit tests/functional
+script: poetry run nosetests --verbosity 2 --with-spec --spec-color tests/unit tests/functional
 
 # automated pypi releases
 deploy:

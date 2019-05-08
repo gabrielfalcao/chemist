@@ -1,19 +1,21 @@
+all: deps tests html-docs
+
 deps:
-	@(2>&1 which pipenv > /dev/null) || pip install pipenv
-	@pipenv install --dev --pre
-	@pipenv run python setup.py develop
+	@(2>&1 which poetry > /dev/null) || pip install poetry
+	@poetry install
+	@poetry run python setup.py develop
 
 tests: unit functional
 
 
 unit:
-	pipenv run nosetests tests/unit --rednose
+	poetry run nosetests tests/unit --rednose
 
 db:
 	-@psql postgres -c 'create database chemist;'
 
 functional: db
-	pipenv run nosetests tests/functional --with-spec --spec-color
+	poetry run nosetests tests/functional --with-spec --spec-color
 
 html-docs:
 	cd docs && make html
@@ -21,20 +23,15 @@ html-docs:
 docs: html-docs
 	open docs/build/html/index.html
 
-upgrade:
-	pipenv update
-	pipenv lock -r > requirements.txt
-	pipenv lock -r --dev > development.txt
-
 release:
 	@rm -rf dist/*
 	@./.release
 	@make pypi
 
 dist: unit
-	pipenv run python setup.py build sdist
+	poetry run python setup.py build sdist
 
 pypi: dist
-	@pipenv run twine upload dist/*.tar.gz
+	@poetry run twine upload dist/*.tar.gz
 
 .PHONY: docs dist
