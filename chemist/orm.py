@@ -101,12 +101,12 @@ class Context(object):
 
     Its purpose is to leverage quicky swapping the engine between "unit" tests.
     """
-    def __init__(self, default_uri:str=None):
+    def __init__(self, default_uri=None):
         self.default_uri = default_uri or os.getenv('CHEMIST_SQLALCHEMY_URI')
         self.engines = OrderedDict()
         self.metadata = MetaData()
 
-    def set_default_uri(self, uri: str):
+    def set_default_uri(self, uri):
         self.default_uri = uri
         self.metadata.bind = self.get_default_engine()
         return self.metadata
