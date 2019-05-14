@@ -1,39 +1,17 @@
-.. _Tutorial:
+.. _Testing:
 
-Quick Start
-===========
-
-
-Install
--------
-
-.. code:: bash
-
-   pip install chemist
+Testing
+=======
 
 
-MariaDB/MySQL
-~~~~~~~~~~~~~
-
-.. code:: bash
-
-   pip install chemist[mysql]
-   pip install chemist[mariadb]  # alias to [mysql]
+The example below uses the module `testing.postgresql
+<https://pypi.org/project/testing.postgresql/>`_ to run each test case
+in an isolated postgres server instance all you need is the postgres
+binaries available in the host machine.
 
 
-Postgres
-~~~~~~~~
-
-.. code:: bash
-
-   pip install chemist[psycopg2]
-   pip install chemist[postgres]    # alias to [psycopg2]
-   pip install chemist[postgresql]  # alias to [psycopg2]
-
-
-Declaring a model
------------------
-
+``models.py``
+-------------
 
 .. code:: python
 
@@ -94,97 +72,47 @@ Declaring a model
 
             return False
 
-    metadata.drop_all()
-    metadata.create_all()
 
-
-Creating new records
---------------------
-
-.. code:: python
-
-    data = {
-        "email": "octocat@github.com",
-        "password": "1234",
-    }
-    created = User.create(**data)
-
-    assert created.id == 1
-
-    assert created.to_dict() == {
-        'id': 1,
-    }
-
-    same_user = User.get_or_create(**data)
-    assert same_user.id == created.id
-
-
-Querying
---------
+``test_models.py``
+------------------
 
 .. code:: python
 
 
-    user_count = User.count()
-    user_list = User.all()
-
-    github_users = User.find_by(email__contains='github.com')
-    octocat = User.find_one_by(email='octocat@github.com')
-
-    assert octocat == user_list[0]
-
-    assert octocat.id == 1
-
-    assert user_count == 1
+   import unittest
+   import testing.postgresql
+   from chemist import set_default_uri
+   from models import User
 
 
-Editing active records
-----------------------
+   class UserModelTestCase(unittest.TestCase):
+       def setUp(self):
+           self.postgresql = testing.postgresql.Postgresql()
+           set_default_uri(self.postgresql.url())
 
-.. code:: python
+       def tearDown(self):
+           self.postgresql.stop()
 
+       def test_authentication(self):
+           # Given a user with a hardcoded password
+           foobar = User.create('foo@bar.com', '123insecure')
 
-    octocat = User.find_one_by(email='octocat@github.com')
+           # When I match the password
+           matched = foobar.match_password('123insecure')
 
-    # modify in memory
-
-    octocat.password = 'much more secure'
-    # or ...
-    octocat.set(
-        password='much more secure',
-        email='octocat@gmail.com',
-    )
-
-    # save changes (commit transaction and flush db session)
-    octocat.save()
+           # Then it should have matched
+           assert matched, f'user {foobar} did not match password 123insecure'
 
 
-    # or ...
+       def test_change_password(self):
+           # Given a user with a hardcoded password
+           foobar = User.create('foo@bar.com', '123insecure')
 
-    # modify and save changes in a single call
-    saved_cat = octocat.update_and_save(
-        password='even more secure now',
-        email='octocat@protonmail.com',
-    )
-    assert saved_cat == octocat
+           # When I change the password
+           changed = foobar.change_password('123insecure', 'newPassword')
 
+           # Then it should have succeeded
+           assert matched, f'failed to change password for {foobar}'
 
-Deleting
---------
-
-.. code:: python
-
-    from chemist import set_default_uri
-
-    engine = set_default_uri('sqlite:///example.db')
-
-    octocat = User.find_one_by(email='octocat@github.com')
-
-    # delete row, commit and flush session
-    ghost_cat = octocat.delete()
-
-    # but the copy in memory still has all the data
-    assert ghost_cat.id == 1
-
-    # resurrecting the cat
-    octocat = ghost_cat.save()
+           # And should authenticate with the new password
+           assert foobar.match_password('newPassword'), f'user {foobar} did not match password newPassword'

@@ -11,10 +11,7 @@ tests: unit functional
 unit:
 	poetry run nosetests tests/unit --rednose
 
-db:
-	-@psql postgres -c 'create database chemist;'
-
-functional: db
+functional:
 	poetry run nosetests tests/functional --with-spec --spec-color
 
 html-docs:

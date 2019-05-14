@@ -18,9 +18,10 @@ class Manager(object):
     """
     """
 
-    def __init__(self, model_klass, engine):
+    def __init__(self, model_klass, context):
         self.model = model_klass
-        self.engine = engine
+        self.context = context
+        self.engine = context.engine
 
     def from_result_proxy(self, proxy, result):
         """Creates a new instance of the model given

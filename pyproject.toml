@@ -28,6 +28,7 @@ coverage = "^4.5"
 mysqlclient = "^1.4"
 ipdb = "^0.12.0"
 psycopg2-binary = "^2.8"
+"testing.postgresql" = "^1.3"
 
 [build-system]
 requires = ["poetry>=0.12"]

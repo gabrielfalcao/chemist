@@ -44,6 +44,7 @@ def try_json_deserialize(value, silent=False):
 
     return value
 
+
 class Model(with_metaclass(ORM, object)):
     """Super-class of active record models.
 
@@ -391,28 +392,33 @@ class Model(with_metaclass(ORM, object)):
         """
         self.pre_save()
 
-        conn = self.get_engine(input_engine).connect()
+        engine = self.get_engine(input_engine)
+        conn = engine.connect()
         transaction = conn.begin()
         primary_key_column_name = self.get_pk_name()
         mid = self.__data__.get(primary_key_column_name, None)
-        if mid is None:
-            values = self.to_insert_params()
-            res = conn.execute(self.table.insert().values(**values))
+        try:
+            if mid is None:
+                values = self.to_insert_params()
+                res = conn.execute(self.table.insert().values(**values))
 
-            primary_keys = {
-                primary_key_column_name: res.inserted_primary_key[0]
-            }
-            self.set(**dict(primary_keys))
-            self.set(**dict(res.last_inserted_params()))
-        else:
-            res = conn.execute(
-                self.table.update().values(**self.to_insert_params()).where(self.get_pk_col(primary_key_column_name) == mid))
-            newdata = res.last_updated_params()
-            for k in list(newdata.keys()):
-                if k.endswith('_1'):
-                    newdata[k[:-2]] = newdata.pop(k)
+                primary_keys = {
+                    primary_key_column_name: res.inserted_primary_key[0]
+                }
+                self.set(**dict(primary_keys))
+                self.set(**dict(res.last_inserted_params()))
+            else:
+                res = conn.execute(
+                    self.table.update().values(**self.to_insert_params()).where(self.get_pk_col(primary_key_column_name) == mid))
+                newdata = res.last_updated_params()
+                for k in list(newdata.keys()):
+                    if k.endswith('_1'):
+                        newdata[k[:-2]] = newdata.pop(k)
 
-            self.set(**dict(newdata))
+                self.set(**dict(newdata))
+        except Exception:
+            logger.error('failed for %s', engine)
+            raise
 
         transaction.commit()
         # transaction.flush()

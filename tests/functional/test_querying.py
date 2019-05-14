@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import testing.postgresql
 from sure import scenario
 from mock import Mock
 from datetime import datetime
 from decimal import Decimal
 from chemist import (
-    Model, db, MetaData,
+    Model, db, metadata,
     get_or_create_engine,
     InvalidModelDeclaration,
     InvalidColumnName,
@@ -12,17 +13,22 @@ from chemist import (
     InvalidQueryModifier,
     MultipleEnginesSpecified,
 )
+from chemist import context as chemist_context
 
-metadata = MetaData()
+Postgresql = testing.postgresql.PostgresqlFactory(cache_initialized_db=True)
 
 
 def reset_db(context):
-    engine = get_or_create_engine('postgresql+psycopg2://localhost/chemist')  # in memory db
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
+    context.postgresql = Postgresql()
+    metadata = chemist_context.set_default_uri(context.postgresql.url())
+    metadata.create_all()
 
 
-clean_db = scenario(reset_db, reset_db)
+def cleanup_db(context):
+    context.postgresql.stop()
+
+
+clean_db = scenario(reset_db, cleanup_db)
 
 
 class User(Model):

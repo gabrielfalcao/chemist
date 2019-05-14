@@ -8,10 +8,6 @@ python:
 services:
   - postgresql
 
-
-before_install:
-  - psql -c 'create database chemist;' -U postgres
-
 # command to install dependencies
 install:
   - pip install -U --no-cache-dir poetry

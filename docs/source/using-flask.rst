@@ -13,14 +13,14 @@ A simple application
     import json
     from flask import Flask, request
     from chemist import (
-        Model, db, MetaData,
-        get_or_create_engine,
+        Model, db, metadata,
+        set_default_uri,
     )
 
     app = Flask(__name__)
 
     metadata = MetaData()
-    engine = get_or_create_engine('sqlite:///example.db')
+    engine = set_default_uri('sqlite:///example.db')
 
 
     class User(Model):
@@ -31,7 +31,6 @@ A simple application
             db.Column('created_at', db.DateTime, default=datetime.now),
             db.Column('updated_at', db.DateTime, default=datetime.now)
         )
-
 
 
     @app.post("/user")

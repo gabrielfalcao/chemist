@@ -22,12 +22,10 @@ by :py:meth:`~sqlalchemy.sql.expression.Select.where`.
    from sqlalchemy import asc, desc
 
    from chemist import (
-       Model, db, MetaData,
+       Model, db,
        get_or_create_engine,
    )
-
-   metadata = MetaData()
-
+   from chemist import metadata  # use chemist-managed metadata
 
    def generate_uuid():
        return str(uuid.uuid4())
