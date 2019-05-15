@@ -5,12 +5,14 @@ from flask_app.managers import UserManager
 
 
 def prepare_db(context):
+    set_default_uri('sqlite:///:memory:')
     metadata.drop_all(engine)
     metadata.create_all(engine)
 
 
 def prepare_user_manager(context):
     context.users = UserManager()
+
 
 def prepare_api(context):
     context.http = application.test_client()

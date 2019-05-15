@@ -1,10 +1,12 @@
-import bcrypt
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
+
 import logging
 import dateutil.parser as dateutil
 from chemist import Model, db
 from chemist import (
-    MetaData,
-    get_or_create_engine,
+    metadata,
+    set_default_uri,
 )
 
 
@@ -18,8 +20,7 @@ from flask_app.errors import AuthenticationFailed
 from flask_app.errors import UserTokenExpired
 
 
-metadata = MetaData()
-engine = get_or_create_engine('sqlite:///flask_app.db')
+engine = set_default_uri('sqlite:///flask_app.db')
 
 logger = logging.getLogger(__name__)
 
@@ -50,13 +51,14 @@ class User(Model):
 
     @classmethod
     def secretify_password(cls, plain):
-        return bcrypt.hashpw(plain.encode(), bcrypt.gensalt(12)).decode('utf-8')
+        return PasswordHasher().hash(plain.encode())
 
     def match_password(self, plain):
-        return self.password == bcrypt.hashpw(
-            plain.encode(),
-            self.password.encode(),
-        ).decode('utf-8')
+        try:
+            PasswordHasher().verify(self.password, plain)
+            return True
+        except VerifyMismatchError:
+            return False
 
     def logout(self):
         """deletes the user token. Returns self in order to provide a
