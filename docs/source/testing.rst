@@ -10,8 +10,8 @@ in an isolated postgres server instance all you need is the postgres
 binaries available in the host machine.
 
 
-``test_models.py``
-------------------
+The tests
+---------
 
 .. code:: python
 
@@ -56,8 +56,8 @@ binaries available in the host machine.
 
 
 
-``models.py``
--------------
+The models
+----------
 
 .. code:: python
 
