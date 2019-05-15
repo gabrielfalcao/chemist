@@ -20,7 +20,7 @@ html-docs:
 docs: html-docs
 	open docs/build/html/index.html
 
-release:
+release: tests html-docs
 	@rm -rf dist/*
 	@./.release
 	@make pypi
