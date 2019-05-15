@@ -1,7 +1,7 @@
 .. _Testing:
 
-Testing
-=======
+Writing "unit" tests
+====================
 
 
 The example below uses the module `testing.postgresql
@@ -10,8 +10,6 @@ in an isolated postgres server instance all you need is the postgres
 binaries available in the host machine.
 
 
-The tests
----------
 
 .. code:: python
 
@@ -52,12 +50,11 @@ The tests
            assert matched, f'failed to change password for {foobar}'
 
            # And should authenticate with the new password
-           assert foobar.match_password('newPassword'), f'user {foobar} did not match password newPassword'
+           assert foobar.match_password('newPassword'), (
+               f'user {foobar} did not match password newPassword')
 
 
 
-The models
-----------
 
 .. code:: python
 

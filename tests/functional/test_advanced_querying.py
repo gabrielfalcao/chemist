@@ -51,11 +51,14 @@ class Task(Model):
     @classmethod
     def list_pending(model, *expressions):
         table = model.table
-        order_by = (desc(table.c.updated_at), )
+
+        params = dict(
+            order_by=(desc(table.c.updated_at), )
+        )
         return model.objects().where_many(
             model.table.c.done_at==None,
             *expressions,
-            order_by=order_by,
+            **params,
         )
 
     @classmethod
