@@ -41,18 +41,17 @@ Basic Usage
 .. code:: python
 
     from chemist import (
-        Model, db, MetaData,
-        get_or_create_engine,
+        Model, db, DefaultTable
+        set_default_uri,
     )
 
-    metadata = MetaData()
-    engine = get_or_create_engine('sqlite:///example.db')
+    engine = set_default_uri('sqlite:///example.db')
 
     class BlogPost(Model):
-          table = db.Table('blog_post',metadata,
-              db.Column('id', db.Integer, primary_key=True),
-              db.Column('title', db.Unicode(200), nullable=False),
-              db.Column('content', db.UnicodeText, nullable=False),
+         table = DefaultTable('blog_post'
+             db.Column('id', db.Integer, primary_key=True),
+             db.Column('title', db.Unicode(200), nullable=False),
+             db.Column('content', db.UnicodeText, nullable=False),
          )
 
     post1 = BlogPost.create(title='Hello World', content='\n'.join([
