@@ -15,7 +15,7 @@ functional:
 	poetry run nosetests tests/functional --with-spec --spec-color
 
 html-docs:
-	cd docs && make html
+	poetry run make -C docs html
 
 docs: html-docs
 	open docs/build/html/index.html

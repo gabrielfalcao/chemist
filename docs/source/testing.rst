@@ -10,6 +10,52 @@ in an isolated postgres server instance all you need is the postgres
 binaries available in the host machine.
 
 
+``test_models.py``
+------------------
+
+.. code:: python
+
+
+   import unittest
+   import testing.postgresql
+   from chemist import set_default_uri
+   from models import User
+
+
+   class UserModelTestCase(unittest.TestCase):
+       def setUp(self):
+           self.postgresql = testing.postgresql.Postgresql()
+           set_default_uri(self.postgresql.url())
+
+       def tearDown(self):
+           self.postgresql.stop()
+
+       def test_authentication(self):
+           # Given a user with a hardcoded password
+           foobar = User.create('foo@bar.com', '123insecure')
+
+           # When I match the password
+           matched = foobar.match_password('123insecure')
+
+           # Then it should have matched
+           assert matched, f'user {foobar} did not match password 123insecure'
+
+
+       def test_change_password(self):
+           # Given a user with a hardcoded password
+           foobar = User.create('foo@bar.com', '123insecure')
+
+           # When I change the password
+           changed = foobar.change_password('123insecure', 'newPassword')
+
+           # Then it should have succeeded
+           assert matched, f'failed to change password for {foobar}'
+
+           # And should authenticate with the new password
+           assert foobar.match_password('newPassword'), f'user {foobar} did not match password newPassword'
+
+
+
 ``models.py``
 -------------
 
@@ -71,48 +117,3 @@ binaries available in the host machine.
                 return True
 
             return False
-
-
-``test_models.py``
-------------------
-
-.. code:: python
-
-
-   import unittest
-   import testing.postgresql
-   from chemist import set_default_uri
-   from models import User
-
-
-   class UserModelTestCase(unittest.TestCase):
-       def setUp(self):
-           self.postgresql = testing.postgresql.Postgresql()
-           set_default_uri(self.postgresql.url())
-
-       def tearDown(self):
-           self.postgresql.stop()
-
-       def test_authentication(self):
-           # Given a user with a hardcoded password
-           foobar = User.create('foo@bar.com', '123insecure')
-
-           # When I match the password
-           matched = foobar.match_password('123insecure')
-
-           # Then it should have matched
-           assert matched, f'user {foobar} did not match password 123insecure'
-
-
-       def test_change_password(self):
-           # Given a user with a hardcoded password
-           foobar = User.create('foo@bar.com', '123insecure')
-
-           # When I change the password
-           changed = foobar.change_password('123insecure', 'newPassword')
-
-           # Then it should have succeeded
-           assert matched, f'failed to change password for {foobar}'
-
-           # And should authenticate with the new password
-           assert foobar.match_password('newPassword'), f'user {foobar} did not match password newPassword'
