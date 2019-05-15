@@ -119,11 +119,11 @@ class Manager(object):
         return query
 
     def where_many(self, *expressions, **kwargs):
-        query = self.prepare_where_clause(*expressions, order_**kwargs)
+        query = self.prepare_where_clause(*expressions, **kwargs)
         return self.many_from_query(query)
 
     def where_one(self, *expressions, **kwargs):
-        query = self.prepare_where_clause(*expressions, order_**kwargs)
+        query = self.prepare_where_clause(*expressions, **kwargs)
         return self.one_from_query(query)
 
     def query_by(self, **kwargs):
