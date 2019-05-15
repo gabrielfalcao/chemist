@@ -104,25 +104,26 @@ class Manager(object):
 
         return query
 
-    def prepare_where_clause(self, *expressions, order_by=None):
+    def prepare_where_clause(self, *expressions, **kwargs):
+        order_by = kwargs.pop('order_by', None)
         table = self.model.table
         query = table.select()
         for exp in expressions:
             query = query.where(exp)
 
         if isinstance(order_by, tuple):
-            query = query.order_by(*order_by)
+            query = query.order_by(*order_by, **kwargs)
         elif order_by is not None:
             raise TypeError('order_by must be a tuple of SQLAlchemy columns optionally wrapped in asc/desc modifiers')
 
         return query
 
-    def where_many(self, *expressions, order_by=None):
-        query = self.prepare_where_clause(*expressions, order_by=order_by)
+    def where_many(self, *expressions, **kwargs):
+        query = self.prepare_where_clause(*expressions, order_**kwargs)
         return self.many_from_query(query)
 
-    def where_one(self, *expressions, order_by=None):
-        query = self.prepare_where_clause(*expressions, order_by=order_by)
+    def where_one(self, *expressions, **kwargs):
+        query = self.prepare_where_clause(*expressions, order_**kwargs)
         return self.one_from_query(query)
 
     def query_by(self, **kwargs):
