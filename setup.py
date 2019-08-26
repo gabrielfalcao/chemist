@@ -49,7 +49,7 @@ def read_readme():
 
 
 class extras:
-    postgres = ['psycopg2', 'psycopg2-binary']
+    postgres = ['psycopg2-binary']
     mysql = ['mysqlclient']
 
 
@@ -68,12 +68,12 @@ setup(
         'console_scripts': ['chemist = chemist.console:entrypoint'],
     },
     package_data={
-        'chemist': ' '.join([
+        'chemist': [
             '*.cfg',
             '*.py',
             '*.rst',
             '*.txt',
-        ]),
+        ],
     },
     extras_require={
         'mariadb': extras.mysql,
