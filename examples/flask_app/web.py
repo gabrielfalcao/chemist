@@ -2,7 +2,7 @@
 import json
 from flask import Flask, request
 
-from flask_app.models import User
+from flask_app.models import User, metadata, engine
 
 
 def json_response(data, code=200):
@@ -39,7 +39,6 @@ def login():
     if not user or not user.match_password(password):
         return error_response('authentication error', 401)
 
-    user = user.reset_token()
     return json_response(user.to_dict())
 
 
@@ -49,3 +48,12 @@ def list_users():
     users = User.all()
     data = [{'email': u.email, 'id': u.id} for u in users]
     return json_response(data)
+
+
+def prepare_db_and_run_application():
+    metadata.create_all(engine, verify_first=True)
+    app.run(debug=True)
+
+
+if __name__ == '__main__':
+    prepare_db_and_run_application()
