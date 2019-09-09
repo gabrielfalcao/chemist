@@ -221,9 +221,8 @@ class Model(with_metaclass(ORM, object)):
             return value
 
         data_type = self.__columns__.get(attr, None)
-        builtins = dict(inspect.getmembers(__builtin__)).values()
-
-        value = try_json_deserialize(value, silent=True)
+        builtins = list(dict(inspect.getmembers(__builtin__)).values())
+        builtins.extend([Decimal])
 
         if col.primary_key and not value:
             return value

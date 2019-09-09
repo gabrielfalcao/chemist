@@ -12,7 +12,7 @@ unit:
 	poetry run nosetests tests/unit --rednose
 
 functional:
-	poetry run nosetests tests/functional --with-spec --spec-color
+	poetry run nosetests tests/functional --rednose
 
 html-docs:
 	poetry run make -C docs html
