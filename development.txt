@@ -1,4 +1,4 @@
-chemist==1.5.1
+chemist==1.6.0
 pathlib2==2.3.3
 Sphinx==2.0.1
 sphinx-rtd-theme==0.4.3
