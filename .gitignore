@@ -3,3 +3,6 @@ functional-tests.db
 build/
 dist/
 .venv/
+
+# Ignore bento tool run paths (this line added by `bento init`)
+.bento/

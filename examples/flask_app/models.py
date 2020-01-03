@@ -2,7 +2,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 
 import logging
-import dateutil.parser as dateutil
+import pendulum
 from chemist import Model, db
 from chemist import (
     metadata,
@@ -102,4 +102,4 @@ class Token(Model):
         return User.find_one_by(id=self.user_id)
 
     def is_valid(self):
-        return dateutil.parse(token.expires_at) < datetime.utcnow()
+        return pendulum.parse(token.expires_at) < pendulum.utcnow(tz='UTC')

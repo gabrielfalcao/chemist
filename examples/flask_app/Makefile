@@ -1,36 +1,32 @@
-# prepare toolbelt to run in test-mode
-current_dir := $(shell pwd)
-POETRY_RUN	:= poetry run
+default: recreate dependencies tests docs
 
-default: recreate develop tests docs
 
+.venv/bin/python:
+	python3 -mvenv .venv
+
+.venv/bin/alembic: .venv/bin/python
+	.venv/bin/pip install flask chemist argon2-cffi pendulum chemist alembic psycopg2-binary
+
+clean:
+	rm -rf .venv
 
 recreate: clean  # destroys virtualenv, create new virtualenv and install all python dependencies
-	rm -rf .venv poetry.lock
 	make dependencies
 
-dependencies: # install and configure poetry, create new virtualenv and install python dependencies
-	pip3 install -q -U poetry --no-cache-dir --user
-	poetry config settings.virtualenvs.in-project true
-	poetry install
-	make develop
+dependencies: .venv/bin/python
+	.venv/bin/pip install flask chemist argon2-cffi pendulum chemist
 
-develop: # install all development dependencies with poetry
-	poetry install
-	$(POETRY_RUN) python setup.py develop
-
-run:
-	$(POETRY_RUN) python web.py
+run:.venv/bin/python
+	.venv/bin/python web.py
 
 
 db: drop-db create-db
 
-create-db:
+create-db: .venv/bin/alembic
 	-createuser chemist
 	-@createdb -Ochemist chemist
-	poetry run alembic upgrade head
+	.venv/bin/alembic upgrade head
 
-drop-db:
+drop-db: .venv/bin/alembic
 	-dropdb chemist
 	-dropuser chemist
-k
