@@ -19,13 +19,20 @@ from sqlalchemy import (
     create_engine,
     MetaData,
 )
+from sqlalchemy import Numeric
 
 
 MODEL_REGISTRY = OrderedDict()
-
+MODELS_BY_TABLE = OrderedDict()
 
 format_decimal = lambda num: '{0:.2f}'.format(num)
 logger = logging.getLogger(__name__)
+
+
+
+class Monetary(Numeric):
+    def __init__(self):
+        super().__init__(precision=10, scale=2)
 
 
 def generate_uuid():
@@ -81,6 +88,7 @@ class ORM(type):
     def register_model_class(cls, columns):
         class_id = ORM.determine_model_identity(cls)
         MODEL_REGISTRY[class_id] = columns
+        MODELS_BY_TABLE[cls.table.name] = cls
         return cls
 
     @staticmethod
@@ -91,6 +99,10 @@ class ORM(type):
     @staticmethod
     def get_columns_for_model_instance(instance):
         return ORM.get_columns_for_model_class(instance.__class__)
+
+    @staticmethod
+    def get_model_class_for_table_name(name):
+        return MODELS_BY_TABLE.get(name)
 
 
 class Context(object):
