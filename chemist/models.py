@@ -3,7 +3,7 @@ from six.moves import builtins as __builtin__
 from six import PY2
 
 import re
-import json
+
 import nacl.secret
 import nacl.utils
 import inspect
@@ -19,7 +19,7 @@ from chemist.orm import get_engine
 from chemist.orm import format_decimal
 
 from chemist.managers import Manager
-
+from chemist.serializers import json
 from chemist.exceptions import FieldTypeValueError
 from chemist.exceptions import MultipleEnginesSpecified
 from chemist.exceptions import EngineNotSpecified
