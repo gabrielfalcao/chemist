@@ -173,6 +173,5 @@ intersphinx_mapping = {
     'dateutil': ('https://dateutil.readthedocs.io/en/stable/', None),
     'python': ('https://docs.python.org/3', None),
     'sqlalchemy': ('http://docs.sqlalchemy.org/en/latest/', None),
-    'yaml': ('https://yaml.readthedocs.io/en/latest/', None),
     'nacl': ('https://pynacl.readthedocs.io/en/stable/', None),
 }
