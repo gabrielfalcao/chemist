@@ -114,7 +114,7 @@ def test_manager_all():
     manager = MyTestManager()
 
     manager.all().should.equal("the result")
-    manager.find_by.assert_called_once_with(limit_by=None, offset_by=None)
+    manager.find_by.assert_called_once_with(limit_by=None, offset_by=None, order_by=None)
 
 
 def test_manager_all_with_limit():
@@ -125,7 +125,7 @@ def test_manager_all_with_limit():
     manager = MyTestManager()
 
     manager.all(limit_by=100).should.equal("the result")
-    manager.find_by.assert_called_once_with(limit_by=100, offset_by=None)
+    manager.find_by.assert_called_once_with(limit_by=100, offset_by=None, order_by=None)
 
 
 def test_manager_all_with_offset():
@@ -136,9 +136,17 @@ def test_manager_all_with_offset():
     manager = MyTestManager()
 
     manager.all(offset_by=100, limit_by=20).should.equal("the result")
-    manager.find_by.assert_called_once_with(limit_by=20, offset_by=100)
+    manager.find_by.assert_called_once_with(limit_by=20, offset_by=100, order_by=None)
 
 
+def test_manager_all_with_order_by():
+    class MyTestManager(TestManager):
+        find_by = Mock(return_value="the result")
+
+    manager = MyTestManager()
+
+    manager.all(offset_by=100, limit_by=20, order_by='some_field').should.equal("the result")
+    manager.find_by.assert_called_once_with(limit_by=20, offset_by=100, order_by='some_field')
 
 
 def test_manager_get_connection():

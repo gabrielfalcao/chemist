@@ -21,7 +21,7 @@ Supports application-level encryption powered by :py:class:`nacl.utils.SecretBox
    advanced-querying
    testing
    api
-
+   changelog
 
 Indices and tables
 ==================
