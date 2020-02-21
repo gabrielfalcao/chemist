@@ -157,11 +157,12 @@ class Manager(object):
         Models = partial(self.from_result_proxy, proxy)
         return list(map(Models, proxy.fetchall()))
 
-    def all(self, limit_by=None, offset_by=None):
+    def all(self, limit_by=None, offset_by=None, order_by=None):
         """Returns all existing rows as Model"""
         return self.find_by(
             limit_by=limit_by,
             offset_by=offset_by,
+            order_by=order_by,
         )
 
     def total_rows(self, field_name=None, **where):
