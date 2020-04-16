@@ -129,8 +129,11 @@ class Manager(object):
     def query_by(self, **kwargs):
         """This method is used internally and is not consistent with the other
         ORM methods by not returning a model instance."""
-        conn = self.get_connection()
         query = self.generate_query(**kwargs)
+        return self.query(query)
+
+    def query(self, query):
+        conn = self.get_connection()
         proxy = conn.execute(query)
         return proxy
 
