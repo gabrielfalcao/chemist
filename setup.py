@@ -78,6 +78,7 @@ setup(
     extras_require={
         'mariadb': extras.mysql,
         'mysql': extras.mysql,
+        'psycopg2': extras.postgres,
         'postgres': extras.postgres,
         'postgresql': extras.postgres,
     },
