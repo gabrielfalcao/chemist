@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
+from functools import partial
+from uuid import uuid4
+
 import sqlalchemy as db
 
-from uuid import uuid4
-from functools import partial
+from chemist.exceptions import InvalidColumnName, InvalidQueryModifier
 
-from chemist.exceptions import InvalidColumnName
-from chemist.exceptions import InvalidQueryModifier
+sentinel = type("sentinel", (object,), {})
 
 
-def escape_query(query, escape='#'):
-    for c in ('%', '_', '/'):
-        query = query.replace(c, '{}{}'.format(escape, c))
+def escape_query(query, escape="#"):
+    for c in ("%", "_", "/"):
+        query = query.replace(c, "{}{}".format(escape, c))
     return query
 
 
 class Manager(object):
-    """
-    """
+    """ """
 
     def __init__(self, model_klass, context):
         self.model = model_klass
@@ -38,10 +38,10 @@ class Manager(object):
 
     def create(self, **data):
         """Creates a new model and saves it to MySQL"""
-        colmeta = getattr(self.model, '__columns__', {})
+        colmeta = getattr(self.model, "__columns__", {})
         cols = colmeta.keys()
-        if 'uuid' in cols and 'uuid' not in data:
-            data['uuid'] = uuid4().hex
+        if "uuid" in cols and "uuid" not in data:
+            data["uuid"] = uuid4().hex
 
         instance = self.model(engine=self.engine, **data)
         return instance.save()
@@ -57,8 +57,7 @@ class Manager(object):
 
         return instance
 
-    def generate_query(
-            self, order_by=None, limit_by=None, offset_by=None, **kw):
+    def generate_query(self, order_by=None, limit_by=None, offset_by=None, **kw):
         """Queries the table with the given keyword-args and
         optionally a single order_by field."""
         query = self.model.table.select()
@@ -68,13 +67,13 @@ class Manager(object):
 
             if hasattr(self.model.table.c, field):
                 query = query.where(getattr(self.model.table.c, field) == value)
-            elif '__' in field:
-                field, modifier = field.split('__', 1)
+            elif "__" in field:
+                field, modifier = field.split("__", 1)
                 f = getattr(self.model.table.c, field)
-                if modifier == 'startswith':
+                if modifier == "startswith":
                     query = query.where(f.startswith(value))
-                elif modifier == 'contains':
-                    contains = f.contains(escape_query(value), escape='#')
+                elif modifier == "contains":
+                    contains = f.contains(escape_query(value), escape="#")
                     query = query.where(contains)
                 else:
                     msg = '"{}" is in invalid query modifier.'.format(modifier)
@@ -92,20 +91,20 @@ class Manager(object):
         # Order the results
         db_order = db.desc
         if order_by:
-            if order_by.startswith('+'):
+            if order_by.startswith("+"):
                 order_by = order_by[1:]
                 db_order = db.asc
-            elif order_by.startswith('-'):
+            elif order_by.startswith("-"):
                 order_by = order_by[1:]
 
-        query = query.order_by(db_order(
-            getattr(self.model.table.c, order_by or self.model.get_pk_name())
-        ))
+        query = query.order_by(
+            db_order(getattr(self.model.table.c, order_by or self.model.get_pk_name()))
+        )
 
         return query
 
     def prepare_where_clause(self, *expressions, **kwargs):
-        order_by = kwargs.pop('order_by', None)
+        order_by = kwargs.pop("order_by", None)
         table = self.model.table
         query = table.select()
         for exp in expressions:
@@ -114,7 +113,9 @@ class Manager(object):
         if isinstance(order_by, tuple):
             query = query.order_by(*order_by, **kwargs)
         elif order_by is not None:
-            raise TypeError('order_by must be a tuple of SQLAlchemy columns optionally wrapped in asc/desc modifiers')
+            raise TypeError(
+                "order_by must be a tuple of SQLAlchemy columns optionally wrapped in asc/desc modifiers"
+            )
 
         return query
 
@@ -133,18 +134,19 @@ class Manager(object):
         return self.query(query)
 
     def query(self, query):
-        conn = self.get_connection()
-        proxy = conn.execute(query)
+        with self.engine.begin() as conn:
+            proxy = conn.execute(query)
+
         return proxy
 
     def many_from_query(self, query):
-        conn = self.get_connection()
-        proxy = conn.execute(query)
+        with self.engine.begin() as conn:
+            proxy = conn.execute(query)
         return self.many_from_result_proxy(proxy)
 
     def one_from_query(self, query):
-        conn = self.get_connection()
-        proxy = conn.execute(query)
+        with self.engine.begin() as conn:
+            proxy = conn.execute(query)
         return self.from_result_proxy(proxy, proxy.fetchone())
 
     def find_one_by(self, **kw):
@@ -171,14 +173,15 @@ class Manager(object):
     def total_rows(self, field_name=None, **where):
         """Gets the total number of rows in the table"""
         field_name = field_name or self.model.get_pk_name()
-        conn = self.get_connection()
         query = self.model.table.count()
+
         for key, value in where.items():
-            field = getattr(self.model.table.c, key, None)
-            if field is not None:
+            field = getattr(self.model.table.c, key, sentinel)
+            if field is not sentinel:
                 query = query.where(field == value)
 
-        proxy = conn.execute(query)
+        with self.engine.begin() as conn:
+            proxy = conn.execute(query)
 
         return proxy.scalar()
 

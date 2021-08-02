@@ -30,9 +30,9 @@ from chemist.exceptions import InvalidModelDeclaration
 logger = logging.getLogger(__name__)
 
 if PY2:
-    string_types = (basestring, )
+    string_types = (basestring,)
 else:
-    string_types = (str, )
+    string_types = (str,)
 
 
 def try_json_deserialize(value, silent=False):
@@ -40,7 +40,7 @@ def try_json_deserialize(value, silent=False):
         return json.loads(value)
     except Exception:
         if not silent:
-            logger.warning('could not JSON deserialize value {}'.format(value))
+            logger.warning("could not JSON deserialize value {}".format(value))
 
     return value
 
@@ -71,7 +71,7 @@ class Model(with_metaclass(ORM, object)):
     manager = Manager
 
     @classmethod
-    def using(cls, engine):
+    def using(cls, engine=None):
         if engine is None:
             engine = get_engine()
 
@@ -85,20 +85,34 @@ class Model(with_metaclass(ORM, object)):
         return cls.using(None)
 
     create = classmethod(lambda cls, **data: cls.using(None).create(**data))
-    get_or_create = classmethod(lambda cls, **data: cls.using(None).get_or_create(**data))
-    query_by = classmethod(lambda cls, order_by=None, **kw: cls.using(None).query_by(order_by=order_by, **kw))
+    get_or_create = classmethod(
+        lambda cls, **data: cls.using(None).get_or_create(**data)
+    )
+    query_by = classmethod(
+        lambda cls, order_by=None, **kw: cls.using(None).query_by(
+            order_by=order_by, **kw
+        )
+    )
     find_one_by = classmethod(lambda cls, **kw: cls.using(None).find_one_by(**kw))
     find_by = classmethod(lambda cls, **kw: cls.using(None).find_by(**kw))
     all = classmethod(lambda cls, **kw: cls.using(None).all(**kw))
     total_rows = classmethod(lambda cls, **kw: cls.using(None).total_rows(**kw))
     get_connection = classmethod(lambda cls, **kw: cls.using(None).get_connection())
-    many_from_query = classmethod(lambda cls, query: cls.using(None).many_from_query(query))
-    one_from_query = classmethod(lambda cls, query: cls.using(None).one_from_query(query))
-    where_many = classmethod(lambda cls, *args, **kw: cls.using(None).where_many(*args, **kw))
-    where_one = classmethod(lambda cls, *args, **kw: cls.using(None).where_one(*args, **kw))
+    many_from_query = classmethod(
+        lambda cls, query: cls.using(None).many_from_query(query)
+    )
+    one_from_query = classmethod(
+        lambda cls, query: cls.using(None).one_from_query(query)
+    )
+    where_many = classmethod(
+        lambda cls, *args, **kw: cls.using(None).where_many(*args, **kw)
+    )
+    where_one = classmethod(
+        lambda cls, *args, **kw: cls.using(None).where_one(*args, **kw)
+    )
 
     def __init__(self, engine=None, **data):
-        '''A Model can be instantiated with keyword-arguments that
+        """A Model can be instantiated with keyword-arguments that
         have the same keys as the declared fields, it will make a new
         model instance that is ready to be persited in the database.
 
@@ -116,7 +130,7 @@ class Model(with_metaclass(ORM, object)):
 
         * Implement the `initialize(self)` method that will be always
           called after successfully creating a new model instance.
-        '''
+        """
         Model = self.__class__
         module = Model.__module__
         name = Model.__name__
@@ -129,8 +143,9 @@ class Model(with_metaclass(ORM, object)):
 
         if not isinstance(preprocessed_data, dict):
             raise InvalidModelDeclaration(
-                'The model `{0}` declares a preprocess method but '
-                'it does not return a dictionary!'.format(name))
+                "The model `{0}` declares a preprocess method but "
+                "it does not return a dictionary!".format(name)
+            )
 
         self.__data__ = preprocessed_data
 
@@ -139,7 +154,9 @@ class Model(with_metaclass(ORM, object)):
         for k, v in data.items():
             if k not in self.__columns__:
                 msg = "{0} is not a valid column name for the model {2}.{1} ({3})"
-                raise InvalidColumnName(msg.format(k, name, module, sorted(columns.keys())))
+                raise InvalidColumnName(
+                    msg.format(k, name, module, sorted(columns.keys()))
+                )
 
             if callable(v):
                 v = v()
@@ -149,7 +166,9 @@ class Model(with_metaclass(ORM, object)):
         self.initialize()
 
     def __repr__(self):
-        return '<{0} {1}={2}>'.format(self.__class__.__name__, self.get_pk_name(), self.get_pk_value())
+        return "<{0} {1}={2}>".format(
+            self.__class__.__name__, self.get_pk_name(), self.get_pk_value()
+        )
 
     def preprocess(self, data):
         """Placeholder for your own custom preprocess method, remember
@@ -175,7 +194,7 @@ class Model(with_metaclass(ORM, object)):
         return data
 
     def get_encryption_box_for_attribute(self, attr):
-        keymap = dict(getattr(self, 'encryption', None) or {})
+        keymap = dict(getattr(self, "encryption", None) or {})
         if attr not in keymap:
             return
 
@@ -287,7 +306,12 @@ class Model(with_metaclass(ORM, object)):
         """
 
         keys = list(self.__columns__.keys())
-        return dict([(k, self.serialize_value(k, self.__data__.get(k))) for k in self.__columns__.keys()])
+        return dict(
+            [
+                (k, self.serialize_value(k, self.__data__.get(k)))
+                for k in self.__columns__.keys()
+            ]
+        )
 
     def to_insert_params(self):
         """utility method used internally to generate a dict with all the
@@ -312,7 +336,10 @@ class Model(with_metaclass(ORM, object)):
             data[k] = self.encrypt_attribute(k, v)
 
         primary_key_names = [x.name for x in self.table.primary_key.columns]
-        keys_to_pluck = list(filter(lambda x: x not in self.__columns__, data.keys())) + primary_key_names
+        keys_to_pluck = (
+            list(filter(lambda x: x not in self.__columns__, data.keys()))
+            + primary_key_names
+        )
 
         # not saving primary keys, let's let the SQL backend to take
         # care of auto increment.
@@ -349,9 +376,11 @@ class Model(with_metaclass(ORM, object)):
 
         conn = self.get_engine().connect()
 
-        result = conn.execute(self.table.delete().where(
-            getattr(self.table.c, self.get_pk_name()) == self.get_pk_value()
-        ))
+        result = conn.execute(
+            self.table.delete().where(
+                getattr(self.table.c, self.get_pk_name()) == self.get_pk_value()
+            )
+        )
 
         self.post_delete()
         return result
@@ -377,11 +406,13 @@ class Model(with_metaclass(ORM, object)):
         if not self.engine and not input_engine:
             raise EngineNotSpecified(
                 "You must specify a SQLAlchemy engine object in order to "
-                "do operations in this model instance: {0}".format(self))
+                "do operations in this model instance: {0}".format(self)
+            )
         elif self.engine and input_engine:
             raise MultipleEnginesSpecified(
                 "This model instance has a SQLAlchemy engine object already. "
-                "You may not save it to another engine.")
+                "You may not save it to another engine."
+            )
 
         return self.engine or input_engine
 
@@ -401,28 +432,29 @@ class Model(with_metaclass(ORM, object)):
                 values = self.to_insert_params()
                 res = conn.execute(self.table.insert().values(**values))
 
-                primary_keys = {
-                    primary_key_column_name: res.inserted_primary_key[0]
-                }
+                primary_keys = {primary_key_column_name: res.inserted_primary_key[0]}
                 self.set(**dict(primary_keys))
                 self.set(**dict(res.last_inserted_params()))
             else:
                 res = conn.execute(
-                    self.table.update().values(**self.to_insert_params()).where(self.get_pk_col(primary_key_column_name) == mid))
+                    self.table.update()
+                    .values(**self.to_insert_params())
+                    .where(self.get_pk_col(primary_key_column_name) == mid)
+                )
                 newdata = res.last_updated_params()
                 for k in list(newdata.keys()):
-                    if k.endswith('_1'):
+                    if k.endswith("_1"):
                         newdata[k[:-2]] = newdata.pop(k)
 
                 self.set(**dict(newdata))
         except Exception:
-            logger.error('failed for %s', engine)
+            logger.error("failed for %s", engine)
             raise
 
         transaction.commit()
         # transaction.flush()
         conn.close()
-        self.post_save()
+        self.post_save(transaction)
 
         return self
 
@@ -431,7 +463,7 @@ class Model(with_metaclass(ORM, object)):
         This method can be overwritten by subclasses in order to take any domain-related action
         """
 
-    def post_save(self):
+    def post_save(self, transaction):
         """called right after executing a save.
         This method can be overwritten by subclasses in order to take any domain-related action
         """
@@ -451,17 +483,16 @@ class Model(with_metaclass(ORM, object)):
         return new
 
     def set(self, **kw):
-        """Sets multiple fields, does not perform a save operation
-        """
+        """Sets multiple fields, does not perform a save operation"""
         cols = self.__columns__.keys()
-        pk_regex = re.compile(r'^{}_\d+$'.format(self.get_pk_name))
+        pk_regex = re.compile(r"^{}_\d+$".format(self.get_pk_name))
 
         for name, value in kw.items():
             if pk_regex.match(name):
                 continue
 
             if name not in cols:
-                raise InvalidColumnName('{0}.{1}'.format(self, name))
+                raise InvalidColumnName("{0}.{1}".format(self, name))
             setattr(self, name, value)
             self.__data__[name] = value
 
@@ -484,19 +515,26 @@ class Model(with_metaclass(ORM, object)):
     def __eq__(self, other):
         """Just making sure models are comparable to each other"""
 
-        matches_pk = all([
-            type(self) == type(other),
-            self.get_pk_name() == other.get_pk_name(),
-            self.get_pk_value(), other.get_pk_value(),
-        ])
+        matches_pk = all(
+            [
+                type(self) == type(other),
+                self.get_pk_name() == other.get_pk_name(),
+                self.get_pk_value(),
+                other.get_pk_value(),
+            ]
+        )
         if matches_pk:
             return self.get_pk_value() == other.get_pk_value()
 
         keys = set(list(self.__data__.keys()) + list(other.__data__.keys()))
 
         return all(
-            [self.__data__.get(key) == other.__data__.get(key)
-             for key in keys if key != self.get_pk_name()])
+            [
+                self.__data__.get(key) == other.__data__.get(key)
+                for key in keys
+                if key != self.get_pk_name()
+            ]
+        )
 
     @classmethod
     def get_pk_name(cls):
