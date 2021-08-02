@@ -60,11 +60,13 @@ push-release:  # pushes distribution tarballs of the current version
 # Prepares release of this package prior to pushing to pypi
 build-release:
 	rm -rf ./dist  # remove local packages
+	$(VENV)/bin/python setup.py build sdist
 	$(VENV)/bin/twine check dist/*.tar.gz
 	$(VENV)/bin/python setup.py build sdist
 
 # Convenience target that runs all tests then builds and pushes a release to pypi
-release: tests build-release push-release
+release: tests
+	./.release
 	$(MAKE) build-release
 	$(MAKE) push-release
 
